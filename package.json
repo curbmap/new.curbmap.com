@@ -3,9 +3,18 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@types/react-sidebar": "^2.2.2",
+    "eslint-config-airbnb": "^16.1.0",
+    "lodash": "^4.17.4",
     "react": "^16.2.0",
     "react-dom": "^16.2.0",
-    "react-scripts": "1.1.0"
+    "react-redux": "^5.0.6",
+    "react-scripts": "1.1.0",
+    "react-sidebar": "^2.3.2",
+    "redux": "^3.7.2",
+    "styled-components": "^2.4.0",
+    "tslint": "^5.9.1",
+    "typescript": "^2.6.2"
   },
   "scripts": {
     "start": "react-scripts start",

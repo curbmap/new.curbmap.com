@@ -26,3 +26,18 @@
   from { transform: rotate(0deg); }
   to { transform: rotate(360deg); }
 }
+
+@font-face {
+  font-family: 'Poppins-SemiBold';
+  src: url('./Fonts/Poppins-SemiBold.ttf');
+}
+
+@font-face {
+  font-family: 'Poppins-Regular';
+  src: url('./Fonts/Poppins-Regular.ttf');
+}
+
+@font-face {
+  font-family: 'Roboto-Regular';
+  src: url('./Fonts/Roboto-Regular.ttf');
+}
