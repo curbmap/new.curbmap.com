@@ -1,6 +1,4 @@
 import React, { Component } from 'react'
-import logo from './logo.svg'
-import { injectGlobal } from 'styled-components'
 import './App.css'
 import Labeling from './Components/labeling'
 
@@ -10,7 +8,7 @@ class App extends Component {
     //
   }
   render() {
-    return <Labeling />
+    return <Labeling username="curbmaptest" session="x" />
   }
 }
 
