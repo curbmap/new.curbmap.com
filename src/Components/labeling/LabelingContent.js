@@ -176,18 +176,10 @@ class LabelingContent extends Component {
   }
   updateWindowDimensions() {
     this.updateImage();
-    console.log(this.state.image.width);
-    let oldh = this.state.windowheight;
-    let oldw = this.state.windowwidth;
-    let ratioh = window.innerHeight/oldh;
-    let ratiow = window.innerWidth/oldw;
-    let imgratio = this.state.imagewidth > this.state.imageheight? ratiow : ratioh;
     this.setState({
       windowwidth: window.innerWidth,
       windowheight: window.innerHeight,
     });
-    console.log(this.state.image);
-    console.log("running update canvas -- RESIZE");
     this.updateCanvas();
     this.drawRects();
   }
@@ -199,15 +191,12 @@ class LabelingContent extends Component {
   }
 
   getImageSize(evt) {
-    console.log("image size", evt);
     this.setState({ imagewidth: evt.width, imageheight: evt.height, originalimagewidth: evt.width });
     this.updateCanvas();
   }
 
   handleDoubleClick(event) {
-    console.log("double not content", event);
     if (this.state.iddoubleclicked === null) {
-      console.log(this.state);
       const { x, y } = this.state.stageRef.getPointerPosition();
       let newBoxes = this.state.boxes;
       newBoxes.push({
@@ -216,9 +205,9 @@ class LabelingContent extends Component {
         width: 30 / this.state.imagewidth,
         height: 30 / this.state.imagewidth,
         type: labels.permanent_no_parking_sign,
-        id: newBoxes[newBoxes.length - 1].id + 1
+        id: newBoxes[newBoxes.length - 1].id + 1,
+        justCreated: true
       });
-      console.log(newBoxes);
       this.setState({
         lastMouseLocation: this.state.mouseLocation,
         mouseLocation: {
@@ -263,13 +252,8 @@ class LabelingContent extends Component {
   }
 
   drawRects() {
-    console.log("drawRects");
     let values = [];
-    console.log(this.state.imagewidth);
     this.state.boxes.forEach(box => {
-      console.log("draw box", this.state.imageheight);
-      console.log(box.type);
-      console.log(box.x * this.state.imagewidth);
       values.push(
         <LabelBox
           x={box.x * this.state.imagewidth}
@@ -287,9 +271,7 @@ class LabelingContent extends Component {
         />
       );
     });
-    console.log(values);
     this.state.labelBoxes = values;
-    console.log(this.state.labelBoxes);
     this.updateCanvas();
     this.forceUpdate();
   }
@@ -301,7 +283,6 @@ class LabelingContent extends Component {
   }
 
   movingRect(id) {
-    console.log(id);
     this.setState({ movingRect: id });
   }
 
@@ -341,7 +322,6 @@ class LabelingContent extends Component {
           this.state.mouseInTopLeftCorner
         ) {
           // touching topLeft corner
-          console.log("touching tl");
           tl = true;
           this.setState({ mouseInTopLeftCorner: true });
         }
@@ -352,30 +332,21 @@ class LabelingContent extends Component {
             y + h < newy + 7 / this.state.imageheight) ||
           this.state.mouseInBottomRightCorner
         ) {
-          console.log("touching br");
           br = true;
           this.setState({ mouseInBottomRightCorner: true });
         }
         if (!br && !tl) {
           const distX = newx - lastx;
           const distY = newy - lasty;
-          console.log("not touching corners");
-          console.log(this.state.imageheight);
           if (copyBoxes[idx].x + distX > 1 / this.state.imagewidth) {
             if (newx < 1 - copyBoxes[idx].width - 1 / this.state.imagewidth) {
               copyBoxes[idx].x += distX;
-              console.log("X> with distX:", copyBoxes[idx].x, distX);
             } else if (
               newx >=
               1 - copyBoxes[idx].width - 1 / this.state.imagewidth
             ) {
-              console.log(
-                "XXX:",
-                1 - copyBoxes[idx].width - 1 / this.state.imagewidth
-              );
               copyBoxes[idx].x =
                 1 - copyBoxes[idx].width - 1 / this.state.imagewidth;
-              console.log("X> imagewidth:", copyBoxes[idx].x);
             }
           } else {
             copyBoxes[idx].x = 1 / this.state.imagewidth;
@@ -401,7 +372,6 @@ class LabelingContent extends Component {
           this.updateCanvas();
           this.forceUpdate();
         } else if (tl) {
-          console.log("in top left drag");
           // move x y to mouse position and change w/h
           let distx = 0;
           let disty = 0;
@@ -457,7 +427,6 @@ class LabelingContent extends Component {
             newy <= (y + h) - 2/this.state.imageheight &&
             Math.abs(newy - y) > 1/this.state.imageheight
           ) {
-            console.log("within y range");
             disty = y - newy;
             newh += disty;
             copyBoxes[idx].y = newy;
@@ -556,7 +525,8 @@ class LabelingContent extends Component {
         space="fit"
       />
     );
-    this.state.image = imageBackground;
+    this.setState({image: imageBackground});
+    // this.state.image = imageBackground;
   }
 
   updateCanvas(num = 0) {
@@ -601,96 +571,26 @@ class LabelingContent extends Component {
     let newBoxes = this.state.boxes;
 
     let type = null;
-    let switchType = this.state.selectType;
+    let selectType = this.state.selectType;
     if (this.state.selectType === null) {
-      switchType = "red_curb";
+      selectType = "red_curb";
     }
-    console.log("switchType:", switchType);
-    switch (switchType) {
-      case "permament_permit_sign":
-        type = labels.permament_permit_sign;
-        break;
-      case "permanent_no_parking_sign":
-        type = labels.permanent_no_parking_sign;
-        break;
-      case "permanent_no_stopping_sign":
-        type = labels.permanent_no_stopping_sign;
-        break;
-      case "permanent_time_limit_sign":
-        type = labels.permanent_time_limit_sign;
-        break;
-      case "permanent_bus_stop_sign":
-        type = labels.permanent_bus_stop_sign;
-        break;
-      case "permanent_no_drop_off_pick_up_sign":
-        type = labels.permanent_no_drop_off_pick_up_sign;
-        break;
-      case "permanent_meter_sign":
-        type = labels.permanent_meter_sign;
-        break;
-      case "permanent_street_sign":
-        type = labels.permanent_street_sign;
-        break;
-      case "permanent_private_parking_sign":
-        type = labels.permanent_private_parking_sign;
-        break;
-      case "permanent_other_sign":
-        type = labels.permanent_other_sign;
-        break;
-      case "temporary_no_parking_sign":
-        type = labels.temporary_no_parking_sign;
-        break;
-      case "temporary_no_stopping_sign":
-        type = labels.temporary_no_stopping_sign;
-        break;
-      case "temporary_time_limit_sign":
-        type = labels.temporary_time_limit_sign;
-        break;
-      case "temporary_permit_sign":
-        type = labels.temporary_permit_sign;
-        break;
-      case "temporary_other_sign":
-        type = labels.temporary_other_sign;
-        break;
-      case "hydrant":
-        type = labels.hydrant;
-        break;
-      case "meter":
-        type = labels.meter;
-        break;
-      case "red_curb":
-        type = labels.red_curb;
-        break;
-      case "yellow_curb":
-        type = labels.yellow_curb;
-        break;
-      case "white_curb":
-        type = labels.white_curb;
-        break;
-      case "green_curb":
-        type = labels.green_curb;
-        break;
-      case "blue_curb":
-        type = labels.blue_curb;
-        break;
-      case "not_interesting":
-        type = labels.not_interesting;
-        break;
-      default:
-        type = labels.not_interesting;
-        break;
-    }
+    type = labels[selectType];
+    console.log(type);
     newBoxes[idx].type = type;
+    newBoxes[idx].justCreated = false;
     this.setState({ boxes: newBoxes, showModal: false, iddoubleclicked: null });
-    console.log("here in done MYTYPE: " + type);
     this.drawRects();
     this.updateCanvas();
     this.forceUpdate();
   }
 
   cancel(evt) {
-    console.log(evt);
-    console.log(evt.target.value);
+    if (this.state.boxes[this.state.boxes.length-1].justCreated) {
+      let newBoxes = this.state.boxes;
+      newBoxes.pop();
+      this.setState({boxes: newBoxes});
+    }
     this.setState({ showModal: false, iddoubleclicked: null });
     this.drawRects();
     this.updateCanvas();
@@ -700,75 +600,26 @@ class LabelingContent extends Component {
       <div>
         <div>
           <Select onChange={this.handleSelectChange.bind(this)}>
-            <option value="red_curb">Red Curb</option>
-            <option value="green_curb">Green Curb</option>
-            <option value="yellow_curb">Yellow Curb</option>
-            <option value="white_curb">White Curb</option>
-            <option value="blue_curb">Blue Curb</option>
-            <option value="hydrant">Fire Hydrant</option>
-            <option value="meter">Parking Meter</option>
-            <option value="permanent_no_parking_sign">
-              Permanent No Parking Sign
-            </option>
-            <option value="permanent_no_stopping_sign">
-              Permanent No Stopping Sign
-            </option>
-            <option value="permanent_time_limit_sign">
-              Permanent Time Limit Sign
-            </option>
-            <option value="permament_permit_sign">
-              Permanent Permit Exempt Sign
-            </option>
-            <option value="permanent_bus_stop_sign">
-              Permanent Bus Stop Sign
-            </option>
-            <option value="permanent_no_drop_off_pick_up_sign">
-              Permanent No Drop-off/Pick-up Sign
-            </option>
-            <option value="permanent_meter_sign">
-              Permanent Meter Sign (Sign for cost of meter)
-            </option>
-            <option value="permanent_street_sign">
-              A street sign (e.g. "Rodeo Dr.")
-            </option>
-            <option value="permanent_private_parking_sign">
-              Private Parking Sign
-            </option>
-            <option value="permanent_other_sign">
-              Permanent Parking Restriction Sign Not Listed
-            </option>
-            <option value="temporary_no_parking_sign">
-              Temporary No Parking Sign
-            </option>
-            <option value="temporary_no_stopping_sign">
-              Temporary No Stopping Sign
-            </option>
-            <option value="temporary_time_limit_sign">
-              Temporary Time Limit Sign
-            </option>
-            <option value="temporary_permit_sign">
-              Temporary Permit Exempt/Required Sign
-            </option>
-            <option value="temporary_other_sign">
-              Temporary Other Parking Sign Not Listed
-            </option>
-            <option value="not_interesting">Sign Not About Parking!</option>
+          {
+            Object.keys(labels).map((key) => {
+              return(
+                <option value={key}>{labels[key].value}</option>
+              );
+            })
+          }
           </Select>
         </div>
         <ButtonOk value="done" onClick={this.done.bind(this)}>
-          {" "}
-          Done!{" "}
+          {" Done! "}
         </ButtonOk>
         <ButtonCancel value="cancel" onClick={this.cancel.bind(this)}>
-          {" "}
-          Cancel{" "}
+          {" Cancel "}
         </ButtonCancel>
       </div>
     );
   }
 
   render() {
-    console.log(this.state.originalimagewidth);
     return (
       <div>
         <Modal
