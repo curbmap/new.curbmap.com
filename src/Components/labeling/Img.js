@@ -22,7 +22,7 @@ class Img extends Component {
 		this.state = {
 			image: null,
 			error: false,
-			loaded: false
+      loaded: false,
 		};
 	}
 
@@ -67,12 +67,6 @@ class Img extends Component {
 				img.loaded = true;
 				this.setState({loaded: true, image: img});
         console.log("Image loaded", src);
-        var selfDims = {width: this.props.width, height: this.props.height},
-          image = this.state.image,
-          imageDims = image ? {width: image.width, height: image.height} : selfDims,
-          dims = this.getDims(this.props.space, selfDims, imageDims);
-        console.log(this.props);
-        this.props.onLoad(dims);
 			});
 
 			img.errorFns.push(() => {
@@ -103,9 +97,12 @@ class Img extends Component {
 	};
 
 	fitRect = (p, c) => {
-		return (c.width / c.height) > (p.width / p.height)
+    console.log("fitrect called");
+		let val = (c.width / c.height) > (p.width / p.height)
 			? {width: p.width, height: c.height * (p.width / c.width)}
-			: {height: p.height, width: c.width * (p.height / c.height)};
+      : {height: p.height, width: c.width * (p.height / c.height)};
+    this.props.onLoad(val);
+    return val;
 	};
 
 	getDims = (space, parent, child) => {
@@ -133,7 +130,7 @@ class Img extends Component {
 			pos = {x: this.props.x || 0, y: this.props.y || 0};
 
 		return (
-			<Image image={this.state.image} x={pos.x} y={pos.y} width={dims.width} height={dims.height}/>
+			<Image id="background" image={this.state.image} x={pos.x} y={pos.y} width={dims.width} height={dims.height}  />
 		);
 	};
 }

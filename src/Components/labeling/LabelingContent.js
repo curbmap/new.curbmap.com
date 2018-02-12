@@ -9,6 +9,7 @@ import Modal from "react-modal";
 import LabelBox from "./LabelBox";
 import Img from "./Img";
 import labels from "../labeling/Labels";
+import transparentPng from './transparent.png';
 
 function findBox(id, boxes) {
   for (let i = 0; i < boxes.length; i += 1) {
@@ -121,6 +122,7 @@ class LabelingContent extends Component {
       image: null,
       imagewidth: 0,
       imageheight: 0,
+      originalimagewidth: 0,
       initial: 0,
       stage: null,
       layer: null,
@@ -128,10 +130,10 @@ class LabelingContent extends Component {
       drawingBox: false,
       boxes: [
         {
-          x: 5,
-          y: 5,
-          width: 100,
-          height: 100,
+          x: 0.2,
+          y: 0.2,
+          width: 0.1,
+          height: 0.1,
           type: labels.permament_permit_sign,
           id: 0
         }
@@ -161,9 +163,9 @@ class LabelingContent extends Component {
 
   // Probably slows performance and may not be correct considering we are not using the real DOM
   componentDidMount() {
+    this.updateImage();
     this.updateWindowDimensions();
     window.addEventListener("resize", this.updateWindowDimensions);
-    this.updateImage();
     this.updateCanvas(0);
   }
   componentWillUpdate() {
@@ -173,13 +175,21 @@ class LabelingContent extends Component {
     window.removeEventListener("resize", this.updateWindowDimensions);
   }
   updateWindowDimensions() {
+    this.updateImage();
+    console.log(this.state.image.width);
+    let oldh = this.state.windowheight;
+    let oldw = this.state.windowwidth;
+    let ratioh = window.innerHeight/oldh;
+    let ratiow = window.innerWidth/oldw;
+    let imgratio = this.state.imagewidth > this.state.imageheight? ratiow : ratioh;
     this.setState({
       windowwidth: window.innerWidth,
-      windowheight: window.innerHeight
+      windowheight: window.innerHeight,
     });
-    console.log("running update canvas");
-    this.updateImage();
+    console.log(this.state.image);
+    console.log("running update canvas -- RESIZE");
     this.updateCanvas();
+    this.drawRects();
   }
   handleDoubleClickFromRect(event, id) {
     this.setState({
@@ -190,7 +200,7 @@ class LabelingContent extends Component {
 
   getImageSize(evt) {
     console.log("image size", evt);
-    this.setState({ imagewidth: evt.width, imageheight: evt.height });
+    this.setState({ imagewidth: evt.width, imageheight: evt.height, originalimagewidth: evt.width });
     this.updateCanvas();
   }
 
@@ -201,10 +211,10 @@ class LabelingContent extends Component {
       const { x, y } = this.state.stageRef.getPointerPosition();
       let newBoxes = this.state.boxes;
       newBoxes.push({
-        x: x,
-        y: y,
-        width: 30,
-        height: 30,
+        x: x / this.state.imagewidth, // use proportions
+        y: y / this.state.imageheight,
+        width: 30 / this.state.imagewidth,
+        height: 30 / this.state.imagewidth,
         type: labels.permanent_no_parking_sign,
         id: newBoxes[newBoxes.length - 1].id + 1
       });
@@ -219,7 +229,6 @@ class LabelingContent extends Component {
         iddoubleclicked: newBoxes[newBoxes.length - 1].id,
         showModal: true
       });
-      console.log("here");
       this.drawRects();
       this.updateCanvas();
       this.forceUpdate();
@@ -256,16 +265,18 @@ class LabelingContent extends Component {
   drawRects() {
     console.log("drawRects");
     let values = [];
+    console.log(this.state.imagewidth);
     this.state.boxes.forEach(box => {
-      console.log("draw box");
+      console.log("draw box", this.state.imageheight);
       console.log(box.type);
-      values.push (
-        (<LabelBox
-          x={box.x}
-          y={box.y}
+      console.log(box.x * this.state.imagewidth);
+      values.push(
+        <LabelBox
+          x={box.x * this.state.imagewidth}
+          y={box.y * this.state.imageheight}
           type={box.type}
-          width={box.width}
-          height={box.height}
+          width={box.width * this.state.imagewidth}
+          height={box.height * this.state.imageheight}
           movingRect={this.movingRect.bind(this)}
           stoppedMovingRect={this.stoppedMovingRect.bind(this)}
           doubleClick={this.handleDoubleClickFromRect.bind(this)}
@@ -273,7 +284,7 @@ class LabelingContent extends Component {
             zIndex: 100
           }}
           id={box.id}
-        />)
+        />
       );
     });
     console.log(values);
@@ -310,30 +321,35 @@ class LabelingContent extends Component {
     const groupObj = this.state.stageRef.find(`#${id}`);
     const boxObj = groupObj[0].children[0];
     if (boxObj != null && boxObj != undefined && idx >= 0) {
-      const x = boxObj.getX() * 1.0;
-      const y = boxObj.getY() * 1.0;
-      const w = boxObj.getWidth() * 1.0;
-      const h = boxObj.getHeight() * 1.0;
+      const x = boxObj.getX() * 1.0 / this.state.imagewidth;
+      const y = boxObj.getY() * 1.0 / this.state.imageheight;
+      const w = boxObj.getWidth() * 1.0 / this.state.imagewidth;
+      const h = boxObj.getHeight() * 1.0 / this.state.imageheight;
+      let newx = this.state.mouseLocation.x / this.state.imagewidth;
+      let newy = this.state.mouseLocation.y / this.state.imageheight;
+      let lastx = this.state.lastMouseLocation.x / this.state.imagewidth;
+      let lasty = this.state.lastMouseLocation.y / this.state.imageheight;
       let tl = false;
       let br = false;
       // Also get the position of
       if (!isNaN(x) && !isNaN(y) && !isNaN(w)) {
         if (
-          (x > this.state.mouseLocation.x - 7 &&
-            x < this.state.mouseLocation.x + 7 &&
-            y > this.state.mouseLocation.y - 7 &&
-            y < this.state.mouseLocation.y + 7) ||
+          (x > newx - 7 / this.state.imagewidth &&
+            x < newx + 7 / this.state.imagewidth &&
+            y > newy - 7 / this.state.imageheight &&
+            y < newy + 7 / this.state.imageheight) ||
           this.state.mouseInTopLeftCorner
         ) {
           // touching topLeft corner
+          console.log("touching tl");
           tl = true;
           this.setState({ mouseInTopLeftCorner: true });
         }
         if (
-          (x + w > this.state.mouseLocation.x - 7 &&
-            x + w < this.state.mouseLocation.x + 7 &&
-            y + h > this.state.mouseLocation.y - 7 &&
-            y + h < this.state.mouseLocation.y + 7) ||
+          (x + w > newx - 7 / this.state.imagewidth &&
+            x + w < newx + 7 / this.state.imagewidth &&
+            y + h > newy - 7 / this.state.imageheight &&
+            y + h < newy + 7 / this.state.imageheight) ||
           this.state.mouseInBottomRightCorner
         ) {
           console.log("touching br");
@@ -341,42 +357,42 @@ class LabelingContent extends Component {
           this.setState({ mouseInBottomRightCorner: true });
         }
         if (!br && !tl) {
-          const distX =
-            this.state.mouseLocation.x - this.state.lastMouseLocation.x;
-          const distY =
-            this.state.mouseLocation.y - this.state.lastMouseLocation.y;
+          const distX = newx - lastx;
+          const distY = newy - lasty;
           console.log("not touching corners");
-          if (copyBoxes[idx].x + distX > 1) {
-            if (
-              this.state.mouseLocation.x <
-              this.state.imagewidth - copyBoxes[idx].width - 1
-            ) {
+          console.log(this.state.imageheight);
+          if (copyBoxes[idx].x + distX > 1 / this.state.imagewidth) {
+            if (newx < 1 - copyBoxes[idx].width - 1 / this.state.imagewidth) {
               copyBoxes[idx].x += distX;
+              console.log("X> with distX:", copyBoxes[idx].x, distX);
             } else if (
-              this.state.mouseLocation.x >=
-              this.state.imagewidth - copyBoxes[idx].width - 1
+              newx >=
+              1 - copyBoxes[idx].width - 1 / this.state.imagewidth
             ) {
+              console.log(
+                "XXX:",
+                1 - copyBoxes[idx].width - 1 / this.state.imagewidth
+              );
               copyBoxes[idx].x =
-                this.state.imagewidth - copyBoxes[idx].width - 1;
+                1 - copyBoxes[idx].width - 1 / this.state.imagewidth;
+              console.log("X> imagewidth:", copyBoxes[idx].x);
             }
           } else {
-            copyBoxes[idx].x = 1;
+            copyBoxes[idx].x = 1 / this.state.imagewidth;
           }
-          if (copyBoxes[idx].y + distY > 1) {
+          if (copyBoxes[idx].y + distY > 1 / this.state.imageheight) {
             if (
-              this.state.mouseLocation.y <
-              this.state.imageheight - copyBoxes[idx].height - 1
+              newy < 1 - copyBoxes[idx].height - 1/this.state.imageheight 
             ) {
               copyBoxes[idx].y += distY;
             } else if (
-              this.state.mouseLocation.y >=
-              this.state.imageheight - copyBoxes[idx].height - 1
+              newy >=
+              1 - copyBoxes[idx].height - 1/ this.state.imageheight 
             ) {
-              copyBoxes[idx].y =
-                this.state.imageheight - copyBoxes[idx].height - 1;
+              copyBoxes[idx].y = 1 - copyBoxes[idx].height - 1/ this.state.imageheight;
             }
           } else {
-            copyBoxes[idx].y = 1;
+            copyBoxes[idx].y = 1 / this.state.imageheight;
           }
           this.setState({
             boxes: copyBoxes
@@ -387,13 +403,15 @@ class LabelingContent extends Component {
         } else if (tl) {
           console.log("in top left drag");
           // move x y to mouse position and change w/h
-          let newx = this.state.mouseLocation.x;
-          let newy = this.state.lastMouseLocation.y;
           let distx = 0;
           let disty = 0;
           let neww = w;
           let newh = h;
-          if (newx > 1 && newx <= x + w - 2.0 && Math.abs(newx - x) > 2) {
+          if (
+            newx > 1/this.state.imagewidth &&
+            newx <= (x + w) - 2.0/this.state.imagewidth &&
+            Math.abs(newx - x) > 1/this.state.imagewidth
+          ) {
             // the top left can move to 1 or 2 pixels left of the right side (otherwise it's not a box)
             distx = x - newx;
             neww += distx;
@@ -407,9 +425,9 @@ class LabelingContent extends Component {
             this.forceUpdate();
             return;
           }
-          if (newx <= 1) {
-            distx = x - 1;
-            newx = 1;
+          if (newx <= 1/this.state.imagewidth) {
+            distx = x - 1 / this.state.imagewidth;
+            newx = 1 / this.state.imagewidth;
             neww += distx;
             copyBoxes[idx].x = newx;
             copyBoxes[idx].width = neww;
@@ -421,9 +439,9 @@ class LabelingContent extends Component {
             this.forceUpdate();
             return;
           }
-          if (newy <= 1) {
-            disty = y - 1;
-            newy = 1;
+          if (newy <= 1/this.state.imageheight) {
+            disty = y - 1 / this.state.imageheight;
+            newy = 1 / this.state.imageheight;
             copyBoxes[idx].y = newy;
             copyBoxes[idx].height = newh;
             this.setState({
@@ -434,7 +452,11 @@ class LabelingContent extends Component {
             this.forceUpdate();
             return;
           }
-          if (newy > 1 && newy <= y + h - 2 && Math.abs(newy - y) > 1) {
+          if (
+            newy > 1/this.state.imageheight &&
+            newy <= (y + h) - 2/this.state.imageheight &&
+            Math.abs(newy - y) > 1/this.state.imageheight
+          ) {
             console.log("within y range");
             disty = y - newy;
             newh += disty;
@@ -448,10 +470,10 @@ class LabelingContent extends Component {
             this.forceUpdate();
             return;
           }
-          if (newx > x + w - 2) {
-            distx = x - (x + w - 2);
-            newx = x + w - 2;
-            neww = 2;
+          if (newx > (x + w) - 2/this.state.imagewidth) {
+            distx = x - (x + w) - 2 / this.state.imagewidth;
+            newx = x + w - 2 / this.state.imagewidth;
+            neww = 2 / this.state.imagewidth;
             copyBoxes[idx].x = newx;
             copyBoxes[idx].width = neww;
             this.setState({
@@ -462,10 +484,10 @@ class LabelingContent extends Component {
             this.forceUpdate();
             return;
           }
-          if (newy > y + h - 2) {
-            disty = y - (y + h - 2);
-            newy = y + h - 2;
-            newh = 2;
+          if (newy > (y + h) - 2/this.state.imageheight) {
+            disty = y - (y + h - 2 / this.state.imageheight);
+            newy = y + h - 2 / this.state.imageheight;
+            newh = 2 / this.state.imageheight;
             copyBoxes[idx].y = newy;
             copyBoxes[idx].height = newh;
             this.setState({
@@ -478,30 +500,28 @@ class LabelingContent extends Component {
           }
           return;
         } else if (br) {
-          let newbrx = this.state.mouseLocation.x;
-          let newbry = this.state.mouseLocation.y;
           let distx = 0;
           let disty = 0;
           let neww = w;
           let newh = h;
-          if (newbrx < this.state.imagewidth && newbrx >= x + 2.0) {
+          if (newx < 1 && newx >= x + 2.0/this.state.imagewidth) {
             // the top left can move to 1 or 2 pixels left of the right side (otherwise it's not a box)
-            distx = Math.abs(x - newbrx);
+            distx = Math.abs(x - newx);
           }
-          if (newbrx >= this.state.imagewidth) {
-            distx = Math.abs(x - this.state.imagewidth);
+          if (newx >= 1) {
+            distx = Math.abs(x - 1);
           }
-          if (newbry >= this.state.imageheight) {
-            disty = Math.abs(y - this.state.imageheight);
+          if (newy >= 1) {
+            disty = Math.abs(y - 1);
           }
-          if (newbry < this.state.imageheight && newbry >= y + 2) {
-            disty = Math.abs(y - newbry);
+          if (newy < 1 && newy >= y + 2/this.state.imageheight) {
+            disty = Math.abs(y - newy);
           }
-          if (newbrx < x + 2) {
-            distx = 2;
+          if (newx < x + 2/this.state.imagewidth) {
+            distx = 2/this.state.imagewidth;
           }
-          if (newbry < y + 2) {
-            disty = 2;
+          if (newy < y + 2/this.state.imageheight) {
+            disty = 2/this.state.imageheight;
           }
           neww = distx;
           newh = disty;
@@ -510,9 +530,10 @@ class LabelingContent extends Component {
           this.setState({
             boxes: copyBoxes
           });
+          this.drawRects();
           this.updateCanvas();
           this.forceUpdate();
-        }
+      }
       }
     }
   }
@@ -564,9 +585,7 @@ class LabelingContent extends Component {
       </Stage>
     );
     if (num === 0) {
-      console.log("resetting stage");
-      console.log(this.state.labelBoxes);
-      this.setState({ stage: newStage, initial: this.state.initial + 1 });
+      this.setState({stage: newStage, initial: this.state.initial + 1 });
     }
   }
 
@@ -580,13 +599,13 @@ class LabelingContent extends Component {
   done(evt) {
     let idx = findBox(this.state.iddoubleclicked, this.state.boxes);
     let newBoxes = this.state.boxes;
-    
+
     let type = null;
     let switchType = this.state.selectType;
     if (this.state.selectType === null) {
       switchType = "red_curb";
     }
-    console.log("switchType:" , switchType);
+    console.log("switchType:", switchType);
     switch (switchType) {
       case "permament_permit_sign":
         type = labels.permament_permit_sign;
@@ -635,7 +654,7 @@ class LabelingContent extends Component {
         break;
       case "hydrant":
         type = labels.hydrant;
-        break;  
+        break;
       case "meter":
         type = labels.meter;
         break;
@@ -663,7 +682,7 @@ class LabelingContent extends Component {
     }
     newBoxes[idx].type = type;
     this.setState({ boxes: newBoxes, showModal: false, iddoubleclicked: null });
-    console.log("here in done MYTYPE: " +type);
+    console.log("here in done MYTYPE: " + type);
     this.drawRects();
     this.updateCanvas();
     this.forceUpdate();
@@ -749,6 +768,7 @@ class LabelingContent extends Component {
   }
 
   render() {
+    console.log(this.state.originalimagewidth);
     return (
       <div>
         <Modal
@@ -761,7 +781,9 @@ class LabelingContent extends Component {
         </Modal>
         <br />
         <br />
-        <DivImg ref="imageplane">
+        <DivImg ref="imageplane" style={{
+          minWidth: this.state.originalimagewidth,
+        }}>
           <div
             style={{
               backgroundColor: "green",
