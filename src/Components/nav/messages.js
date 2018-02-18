@@ -2,6 +2,7 @@ import React from "react";
 import "./messages.css";
 import temporary from "./temporary.svg";
 import car from "./car.svg";
+import sticky from "./sticky.svg";
 
 const messages = {
   "hate parking": (
@@ -29,6 +30,17 @@ const messages = {
         </div>
       </div>
     </div>
+  ),
+  "participate in labeling": (
+    <div className="message">
+      <div className="heading">Make all our neighborhoods even better!</div>
+      <div className="background">
+        <img className="image" src={sticky} alt="a sticky note" />
+        <div className="body">
+          Label some parking signs, get points, and make the world a better place! 
+        </div>
+      </div>
+    </div>    
   )
 };
 
