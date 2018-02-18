@@ -127,7 +127,7 @@ const labels = {
   }, 
   blue_curb: {
     key: "blue_curb",
-    value: "Red curb color",
+    value: "Blue curb color",
     desc: 'An image which includes a blue curb area.',
     color: "rgba(0, 0, 255, 1.0)"
   }, 

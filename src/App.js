@@ -1,15 +1,57 @@
-import React, { Component } from 'react'
-import './App.css'
-import Labeling from './Components/labeling'
+import React, { Component } from "react";
+import { BrowserRouter, Route, Switch } from "react-router-dom";
+import "./App.css";
+import Labeling from "./Components/labeling";
+import Nav from "./Components/nav";
+import Login from "./Components/login";
+import Signup from "./Components/signup";
+import Home from "./Components/home";
+import News from "./Components/news";
 
 class App extends Component {
-  somefunction() {
-    const x = this.context
-    //
+  constructor(props) {
+    super(...props);
+    this.state = {};
   }
+
   render() {
-    return <Labeling username="curbmaptest" session="x" />
+    const labelingprops = {};
+    const loginProps = {};
+    const signupProps = {};
+    return (
+      <BrowserRouter>
+        <div>
+          <Nav />
+          <Switch>
+            {/* Home related routes */}
+            <Route exact path="/" render={props => <Home props={props} />} />
+            {/* Login/Signup related routes */}
+            <Route
+              exact
+              path="/login"
+              render={props => <Login props={props} data={loginProps} />}
+            />
+            <Route
+              exact
+              path="/signup"
+              render={props => <Signup props={props} />}
+            />
+            {/* News stuff */}
+            <Route
+              exact
+              path="/news"
+              render={props => <News props={props} />}
+            />
+            {/* labeling task routes */}
+            <Route
+              exact
+              path="/labeling"
+              render={props => <Labeling props={props} />}
+            />
+          </Switch>
+        </div>
+      </BrowserRouter>
+    );
   }
 }
-
-export default App
+export default App;

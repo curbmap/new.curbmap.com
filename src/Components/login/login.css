@@ -1,0 +1,65 @@
+body {
+  background-color: #4DB4D1;
+}
+.correct {
+  font: medium Verdana,sans-serif;
+  transition: all 0.30s ease-in-out;
+  -webkit-transition: all 0.30s ease-in-out;
+  -moz-transition: all 0.30s ease-in-out;
+  -ms-transition: all 0.30s ease-in-out;
+  -o-transition: all 0.30s ease-in-out;
+  outline: none;
+  padding: 3px 0px 3px 3px;
+  margin: 5px 1px 3px 0px;
+  border: 1px solid #DDDDDD;
+  height: 30px;
+  width: 60%;
+  border-radius: 5px;
+  margin: 10px;
+}
+
+.incorrect {
+  font: medium Verdana,sans-serif;
+  transition: all 0.30s ease-in-out;
+  -webkit-transition: all 0.30s ease-in-out;
+  -moz-transition: all 0.30s ease-in-out;
+  -ms-transition: all 0.30s ease-in-out;
+  -o-transition: all 0.30s ease-in-out;
+  border: 2px solid red;
+  padding: 3px 0px 3px 3px;
+  margin: 5px 1px 3px 0px;
+  height: 30px;
+  width: 60%;
+  border-radius: 5px;
+  margin: 10px;
+}
+
+input:focus, textarea:focus {
+  box-shadow: 0 0 5px rgba(81, 203, 238, 1);
+  padding: 3px 0px 3px 3px;
+  margin: 5px 1px 3px 0px;
+  border: 1px solid rgba(81, 203, 238, 1);
+}
+
+::-webkit-input-placeholder { /* Chrome/Opera/Safari */
+  font: small-caption Verdana,sans-serif;
+  color: rgba(255,100,100, 0.4);
+}
+::-moz-placeholder { /* Firefox 19+ */
+  font: small-caption Verdana,sans-serif;
+  color: pink;
+}
+:-ms-input-placeholder { /* IE 10+ */
+  font: small-caption Verdana,sans-serif;
+  color: pink;
+}
+:-moz-placeholder { /* Firefox 18- */
+  font: small-caption Verdana,sans-serif;
+  color: pink;
+}
+
+button#submit {
+  background-color: #4DB4D1;
+  color: white;
+}
+

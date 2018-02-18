@@ -1,0 +1,34 @@
+.message {
+  width: 100%;
+}
+
+.heading {
+  font-family: Poppins-SemiBold;
+  color: black;
+}
+.background {
+  position: relative;
+  width: 100%;
+  text-align: center; 
+}
+.body {
+  margin-left: 5%;
+  position: relative;
+  font-family: Roboto-Regular;
+  height: 100px;
+  width: 70%;
+}
+
+.image {
+  margin-left: 10%;
+  float: left;
+  position: relative;
+  vertical-align: top;
+  width:10%;
+  transform: rotate(-10deg) scale(0.8);
+  border-radius: 20px;
+  border: 10px solid rgba(77, 180, 209,0.5);
+  padding-left: 10px;
+  padding-right: 10px;
+  background-color:rgba(77, 180, 209,0.6);
+}

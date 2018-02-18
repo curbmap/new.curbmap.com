@@ -1,50 +1,30 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import Sidebar from "react-sidebar";
-import styled from "styled-components";
-// import _ from 'lodash'
+import { withRouter } from "react-router-dom";
 import LabelingContent from "./LabelingContent.js";
-// import * as ActionCreators from '../../Actions'
 
 const request = require("superagent");
 
-const SidebarDiv = styled.div`
-  width: 20vw;
-  height: 100vh;
-  font-family: Poppins-Regular;
-  background: rgba(100, 100, 100, 80);
-  color: white;
-  padding: 1vh;
-`;
 
 class Labeling extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      sidebarOpen: true,
       image:
         "https://curbmap.com:50003/uploads/03673a00-ef23-11e7-903b-8d9a8c07e4d0-1517445504563-85632QW7+RMJC-102.443206787109.jpg"
     };
 
-    this.onSetSidebarOpen = this.onSetSidebarOpen.bind(this);
+    this.save = this.save.bind(this);
+    this.next = this.save.bind(this);
   }
-  onSetSidebarOpen(open) {
-    this.setState({
-      sidebarOpen: open
-    });
+  save(state) {
+    console.log(state);
   }
-  handleKeyPress(event) {
-    console.log(event);
-    if (event.key === "c") {
-      console.log("create new box");
+  previous() {
 
-      // create a box
-      // send of an action to be reduced in the LabelingContent panel
-    } else if (event.key === "d") {
-      console.log("right");
-    } else if (event.key === "q") {
-      console.log("ESCAPE");
-    }
+  }
+  next() {
+
   }
 
   getImage() {
@@ -59,24 +39,31 @@ class Labeling extends Component {
     console.log(res);
   }
   render() {
-    const sidebarContent = (
-      <SidebarDiv>
-        <br/>Sidebar content<br/>
-        <div/>
-      </SidebarDiv>
-    );
     return (
       <div onKeyPress={e => this.handleKeyPress(e)}>
-        <Sidebar
-          sidebar={sidebarContent}
-          open={this.state.sidebarOpen}
-          onSetOpen={this.onSetSidebarOpen}
-        >
-          <LabelingContent image={this.state.image} />
-        </Sidebar>
+          <LabelingContent
+            image={this.state.image}
+            previous={this.previous}
+            next={this.next}
+            save={this.save}
+          />
       </div>
     );
   }
 }
+const mapStateToProps = state => {
+  console.log("LABELING MAPSTATETOPROPS", state);
+  return {
+    logged_in: state.logged_in,
+    signed_up: state.signed_up,
+    session: state.session
+  };
+};
+const mapDispatchToProps = dispatch => {
+  console.log("LABELING MAPDISPATCHTOPROPS", dispatch);
+  return {
+  };
+};
 
-export default Labeling;
+Labeling = connect(mapStateToProps, mapDispatchToProps)(Labeling);
+export default withRouter(Labeling);

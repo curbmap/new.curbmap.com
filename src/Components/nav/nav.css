@@ -1,0 +1,20 @@
+.inactive {
+  padding: 10px;
+  border-radius: 10px;
+  margin-left: 5px;
+  color: black;
+  text-decoration: none;
+  border: 1px solid clear;
+  position: relative;
+  z-index: 100;
+}
+
+.hovering {
+  background-color: rgba(180,180,180,0.3);
+  padding: 10px;
+  border-radius: 10px;
+  border-bottom: 5px solid #000;
+  margin-left: 5px;
+  color: black;
+  text-decoration: none;
+}
