@@ -1,10 +1,8 @@
 import React, { Component } from "react";
-import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
 import LabelingContent from "./LabelingContent.js";
 
 const request = require("superagent");
-
 
 class Labeling extends Component {
   constructor(props) {
@@ -20,12 +18,8 @@ class Labeling extends Component {
   save(state) {
     console.log(state);
   }
-  previous() {
-
-  }
-  next() {
-
-  }
+  previous() {}
+  next() {}
 
   getImage() {
     request
@@ -39,31 +33,18 @@ class Labeling extends Component {
     console.log(res);
   }
   render() {
+    console.log("HERE IN RENDER LABELING");
     return (
       <div onKeyPress={e => this.handleKeyPress(e)}>
-          <LabelingContent
-            image={this.state.image}
-            previous={this.previous}
-            next={this.next}
-            save={this.save}
-          />
+        <LabelingContent
+          image={this.state.image}
+          previous={this.previous}
+          next={this.next}
+          save={this.save}
+        />
       </div>
     );
   }
 }
-const mapStateToProps = state => {
-  console.log("LABELING MAPSTATETOPROPS", state);
-  return {
-    logged_in: state.logged_in,
-    signed_up: state.signed_up,
-    session: state.session
-  };
-};
-const mapDispatchToProps = dispatch => {
-  console.log("LABELING MAPDISPATCHTOPROPS", dispatch);
-  return {
-  };
-};
 
-Labeling = connect(mapStateToProps, mapDispatchToProps)(Labeling);
 export default withRouter(Labeling);

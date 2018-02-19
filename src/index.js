@@ -4,10 +4,10 @@ import { Provider } from "react-redux";
 import "./index.css";
 import App from "./App";
 import registerServiceWorker from "./registerServiceWorker";
-import { createStore } from "redux";
+import { createStore, combineReducers } from "redux";
 import { auth } from "./Reducers/auth.reducers";
-
-let store = createStore(auth);
+import { updateLabels } from "./Reducers/label.reducers";
+let store = createStore(combineReducers({ auth, updateLabels }));
 const unsubscribe = store.subscribe(() => console.log(store.getState()));
 
 ReactDOM.render(

@@ -9,6 +9,7 @@ import LabelBox from "./LabelBox";
 import Img from "./Img";
 import labels from "../labeling/Labels";
 import SortableComponent from "./SortableComponent";
+import { changeLabels } from "../../Actions/label.action.creators";
 
 function findBox(id, boxes) {
   for (let i = 0; i < boxes.length; i += 1) {
@@ -204,7 +205,7 @@ class LabelingContent extends Component {
   }
   deleteBox() {
     let newBoxes = this.state.boxes;
-    let newLabels = this.state.labels;
+    let newLabels = this.props.labels;
     for (let i = 0; i < newLabels.length; i++) {
       const label = newLabels[i];
       if (label.selected === true) {
@@ -214,7 +215,8 @@ class LabelingContent extends Component {
         break;
       }
     }
-    this.setState({ labels: newLabels, boxes: newBoxes });
+    this.props.dispatch(changeLabels(newLabels))
+    this.setState({ boxes: newBoxes });
     this.drawRects();
     this.forceUpdate();
     this.generateLabelButtons();
@@ -532,7 +534,7 @@ class LabelingContent extends Component {
           let disty = h;
           let neww = w;
           let newh = h;
-          console.log({newx, neww, newh});
+          console.log({ newx, neww, newh });
           if (newx < 1 && newx >= x + 1.0 / this.state.imagewidth) {
             // the top left can move to 1 or 2 pixels left of the right side (otherwise it's not a box)
             distx = Math.abs(x - newx);
@@ -584,11 +586,16 @@ class LabelingContent extends Component {
 
   updateCanvas(num = 0) {
     //this.drawRects();
-    console.log(this.refs);
+    let contentWidth = this.refs.stageholder
+      ? this.refs.stageholder.clientWidth
+      : window.innerWidth * 0.7;
+    let contentHeight = this.refs.stageholder
+      ? this.refs.stageholder.clientHeight
+      : window.innerHeight;
     const newStage = (
       <Stage
-        width={this.refs.stageholder.clientWidth}
-        height={this.refs.stageholder.clientHeight}
+        width={contentWidth}
+        height={contentHeight}
         style={{
           textAlign: "center"
         }}
@@ -611,7 +618,7 @@ class LabelingContent extends Component {
     const sortableComponent = (
       <SortableComponent
         id="sortable"
-        items={this.state.labels}
+        items={this.props.labels}
         reorderedState={this.reorderedState}
       />
     );
@@ -620,7 +627,7 @@ class LabelingContent extends Component {
 
   reorderedState(items) {
     console.log("reordered state: ", items);
-    this.setState({ labels: items });
+    //this.setState({ labels: items });
   }
 
   getTitleForModal() {
@@ -642,14 +649,22 @@ class LabelingContent extends Component {
     type = labels[selectType];
     newBoxes[idx].type = type;
     newBoxes[idx].justCreated = false;
-    let newLabels = this.state.labels;
+    let newLabels = this.props.labels.filter(label => {
+      if (label !== undefined && label.id !== newBoxes[idx].id) {
+        return true;
+      }
+      return false;
+    });
+    console.log("DONE NEW LABELS:", newLabels);
     newLabels.push({
       type: selectType,
       id: this.state.iddoubleclicked
     });
+    this.props.dispatch(changeLabels(newLabels));
+    console.log("NEWLABELS:", newLabels)
+    console.log(this.props)
     this.setState({
       boxes: newBoxes,
-      labels: newLabels,
       showModal: false,
       iddoubleclicked: null,
       selectType: null
@@ -743,4 +758,20 @@ class LabelingContent extends Component {
     );
   }
 }
+const mapStateToProps = state => {
+  console.log("LABELING CONTENT STATE", state)
+  if (state.updateLabels.labels) {
+    return {
+      labels: state.updateLabels.labels
+    };
+  } else return;
+};
+const mapDispatchToProps = dispatch => {
+  console.log("LABELING MAPDISPATCHTOPROPS", dispatch);
+  return {
+    dispatch
+  };
+};
+
+LabelingContent = connect(mapStateToProps, mapDispatchToProps)(LabelingContent);
 export default LabelingContent;

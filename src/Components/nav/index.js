@@ -237,14 +237,15 @@ class Nav extends Component {
 const mapStateToProps = state => {
   console.log("NAV MAPSTATETOPROPS", state);
   return {
-    logged_in: state.logged_in,
-    signed_up: state.signed_up,
-    session: state.session
+    logged_in: state.auth.logged_in,
+    signed_up: state.auth.signed_up,
+    session: state.auth.session
   };
 };
 const mapDispatchToProps = dispatch => {
   console.log("NAV MAPDISPATCHTOPROPS", dispatch);
   return {
+    dispatch
   };
 };
 Nav = connect(mapStateToProps, mapDispatchToProps)(Nav);

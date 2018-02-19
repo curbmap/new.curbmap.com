@@ -54,7 +54,7 @@ class App extends Component {
 const mapStateToProps = state => {
   console.log("APP MAPSTATETOPROPS", state);
   let labeling = null;
-  if (state.logged_in) {
+  if (state.auth.logged_in) {
     labeling = (
       <Route
         exact
@@ -64,9 +64,9 @@ const mapStateToProps = state => {
     );
   }
   return {
-    logged_in: state.logged_in,
-    signed_up: state.signed_up,
-    session: state.session,
+    logged_in: state.auth.logged_in,
+    signed_up: state.auth.signed_up,
+    session: state.auth.session,
     labeling: labeling
   };
 };
