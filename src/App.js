@@ -52,7 +52,6 @@ class App extends Component {
   }
 }
 const mapStateToProps = state => {
-  console.log("APP MAPSTATETOPROPS", state);
   let labeling = null;
   if (state.auth.logged_in) {
     labeling = (
@@ -66,13 +65,14 @@ const mapStateToProps = state => {
   return {
     logged_in: state.auth.logged_in,
     signed_up: state.auth.signed_up,
+    username: state.auth.username,
+    email: state.auth.email,
     session: state.auth.session,
     labeling: labeling
   };
 };
 const mapDispatchToProps = dispatch => {
-  console.log("APP MAPDISPATCHTOPROPS", dispatch);
-  return {};
+  return {dispatch};
 };
 
 App = connect(mapStateToProps, mapDispatchToProps)(App);

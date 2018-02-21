@@ -177,6 +177,9 @@ class Nav extends Component {
   chooseRandomMessage() {
     let messageKeys = Object.keys(messages);
     let randMessage = Math.round(Math.random() * messageKeys.length);
+    while (randMessage >= messageKeys.length){
+      randMessage = Math.round(Math.random() * messageKeys.length);
+    }
     return messages[messageKeys[randMessage]];
   }
   getRandomMessage() {

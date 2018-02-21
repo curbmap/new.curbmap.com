@@ -4,8 +4,15 @@ import superagent from "superagent";
 import styled from "styled-components";
 import { connect } from "react-redux";
 import logo from "./logo.svg";
-import { LOGGED_IN, loggedIn } from "../../Actions/auth.action.creators";
+import { loggedIn } from "../../Actions/auth.action.creators";
 import "./login.css";
+
+let HOST_AUTH = "https://curbmap.com";
+let HOST_RES = "https://curbmap.com:50003";
+if (process.env.REACT_APP_STAGE === "dev") {
+  HOST_AUTH = "http://localhost:8080";
+  HOST_RES = "http://localhost:8081";
+}
 
 const ImgLogo = styled.img`
   width: 25%;
@@ -79,14 +86,14 @@ class Login extends Component {
 
   formHandler(evt) {
     superagent
-      .post("https://curbmap.com/login")
+      .post(HOST_AUTH+"/login")
       .send({ username: this.state.username, password: this.state.password })
       .set("Content-Type", "application/x-www-form-urlencoded")
       .end((err, res) => {
         if (err) {
           alert("Error in sending password. Try again in a minute.");
         }
-        if (res.body.success == 1) {
+        if (res.body.success === 1) {
           // emit the action
           this.props.dispatch(loggedIn(res.body));
           this.props.history.push("/");

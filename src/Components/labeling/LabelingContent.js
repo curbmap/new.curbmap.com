@@ -1,15 +1,14 @@
 import React, { Component } from "react";
-import ReactDOM from "react-dom";
 import { connect } from "react-redux";
+import { withRouter } from "react-router-dom";
 import styled from "styled-components";
-import NativeListener from "react-native-listener";
 import { Stage, Layer } from "react-konva";
 import Modal from "react-modal";
 import LabelBox from "./LabelBox";
-import Img from "./Img";
 import labels from "../labeling/Labels";
 import SortableComponent from "./SortableComponent";
 import { changeLabels } from "../../Actions/label.action.creators";
+import Img from "./Img";
 
 function findBox(id, boxes) {
   for (let i = 0; i < boxes.length; i += 1) {
@@ -21,8 +20,6 @@ function findBox(id, boxes) {
 }
 
 const DivImg = styled.div`
-  width: 60vw;
-  height: 99vh;
   float: left;
   align-content: center;
   align: center;
@@ -126,6 +123,7 @@ class LabelingContent extends Component {
       imageheight: 0,
       originalimagewidth: 0,
       initial: 0,
+      imageinitial: 0,
       stage: null,
       layer: null,
       div: null,
@@ -159,12 +157,10 @@ class LabelingContent extends Component {
 
   // Probably slows performance and may not be correct considering we are not using the real DOM
   componentDidMount() {
-    this.updateImage();
     this.updateWindowDimensions();
     window.addEventListener("resize", this.updateWindowDimensions);
     window.addEventListener("keypress", this.keyPressed);
     window.addEventListener("keydown", this.keyDown);
-    this.updateCanvas(0);
   }
   keyPressed(evt) {
     console.log(evt.key);
@@ -180,6 +176,7 @@ class LabelingContent extends Component {
         return;
       case "X":
         this.deleteBox();
+        return;
       default:
         return;
     }
@@ -208,21 +205,22 @@ class LabelingContent extends Component {
     let newLabels = this.props.labels;
     for (let i = 0; i < newLabels.length; i++) {
       const label = newLabels[i];
+      console.log(label);
       if (label.selected === true) {
         let idx = findBox(label.id, newBoxes);
+        console.log("IDX", idx);
         newBoxes.splice(idx, 1);
         newLabels.splice(i, 1);
         break;
       }
     }
-    this.props.dispatch(changeLabels(newLabels))
     this.setState({ boxes: newBoxes });
-    this.drawRects();
-    this.forceUpdate();
-    this.generateLabelButtons();
+    this.props.dispatch(changeLabels(newLabels));
+    this.updateImage();
     this.updateCanvas();
+    this.drawRects();
+    this.generateLabelButtons();
   }
-
   componentWillUpdate() {
     this.updateCanvas(this.state.initial);
   }
@@ -230,14 +228,15 @@ class LabelingContent extends Component {
     window.removeEventListener("resize", this.updateWindowDimensions);
   }
   updateWindowDimensions() {
-    this.updateImage();
     this.generateLabelButtons();
     this.setState({
       windowwidth: window.innerWidth,
       windowheight: window.innerHeight
     });
+    this.updateImage();
     this.updateCanvas();
     this.drawRects();
+    this.forceUpdate();
   }
   handleDoubleClickFromRect(event, id) {
     this.setState({
@@ -247,12 +246,13 @@ class LabelingContent extends Component {
   }
 
   getImageSize(evt) {
+    console.log("imagesize:", evt);
     this.setState({
       imagewidth: evt.width,
       imageheight: evt.height,
       originalimagewidth: evt.width
     });
-    this.updateCanvas();
+    this.updateCanvas(0);
   }
 
   handleDoubleClick(event) {
@@ -290,9 +290,9 @@ class LabelingContent extends Component {
 
   handleMouseMove(event) {
     // update location
-    this.state.stageRef = event.currentTarget;
     const { x, y } = event.currentTarget.getPointerPosition();
     this.setState({
+      stageRef: event.currentTarget,
       lastMouseLocation: this.state.mouseLocation,
       mouseLocation: {
         x,
@@ -331,8 +331,7 @@ class LabelingContent extends Component {
         />
       );
     });
-    this.state.labelBoxes = values;
-    this.updateCanvas();
+    this.setState({ labelBoxes: values });
     this.forceUpdate();
   }
 
@@ -569,51 +568,55 @@ class LabelingContent extends Component {
       }
     }
   }
-
-  updateImage() {
-    const imageBackground = (
-      <Img
-        src={this.props.image}
-        height={this.refs.stageholder.clientHeight}
-        width={this.refs.stageholder.clientWidth}
-        onLoad={this.getImageSize}
-        space="fit"
-      />
-    );
-    //this.setState({image: imageBackground});
-    this.state.image = imageBackground;
-  }
-
+  stage = null;
+  image = null;
   updateCanvas(num = 0) {
     //this.drawRects();
-    let contentWidth = this.refs.stageholder
-      ? this.refs.stageholder.clientWidth
-      : window.innerWidth * 0.7;
-    let contentHeight = this.refs.stageholder
-      ? this.refs.stageholder.clientHeight
-      : window.innerHeight;
+    console.log(this.props);
     const newStage = (
       <Stage
-        width={contentWidth}
-        height={contentHeight}
+        width={
+          this.state.imagewidth !== 0
+            ? this.state.imagewidth
+            : window.innerWidth * 0.4
+        }
+        height={window.innerHeight}
         style={{
           textAlign: "center"
         }}
         onDblClick={this.handleDoubleClick.bind(this)}
         onMouseMove={this.handleMouseMove}
         onContentMouseUp={this.handleMouseUp}
+        id="stageid"
       >
         <Layer>
-          {this.state.image}
+          {this.image}
           {this.state.labelBoxes}
         </Layer>
       </Stage>
     );
+    console.log(newStage);
+    console.log(this.props);
+    this.stage = newStage;
     if (num === 0) {
-      this.setState({ stage: newStage, initial: this.state.initial + 1 });
+      console.log("setting state");
+      //console.log(newStage);
+      //console.log(newStage.getStage());
+      // this.forceUpdate();
     }
   }
-
+  updateImage(initial = 1) {
+    let newImage = (
+      <Img
+        src={this.props.image}
+        height={window.innerHeight}
+        width={window.innerWidth * 0.6}
+        onLoad={this.getImageSize}
+        space="fit"
+      />
+    );
+    this.image = newImage;
+  }
   generateLabelButtons() {
     const sortableComponent = (
       <SortableComponent
@@ -655,14 +658,11 @@ class LabelingContent extends Component {
       }
       return false;
     });
-    console.log("DONE NEW LABELS:", newLabels);
     newLabels.push({
       type: selectType,
       id: this.state.iddoubleclicked
     });
     this.props.dispatch(changeLabels(newLabels));
-    console.log("NEWLABELS:", newLabels)
-    console.log(this.props)
     this.setState({
       boxes: newBoxes,
       showModal: false,
@@ -672,7 +672,6 @@ class LabelingContent extends Component {
     this.drawRects();
     this.generateLabelButtons();
     this.updateCanvas();
-    this.setState({});
   }
 
   cancel(evt) {
@@ -711,6 +710,9 @@ class LabelingContent extends Component {
   }
 
   render() {
+    if (this.stage) {
+      console.log("THIS STAGE:", this.stage);
+    }
     return (
       <div>
         <Modal
@@ -724,21 +726,21 @@ class LabelingContent extends Component {
         <DivImg
           ref="imageplane"
           style={{
-            overflow: "auto"
+            width: window.innerWidth * 0.6,
+            height: window.innerHeight
           }}
         >
           <div
             style={{
-              width: "60vw",
-              height: "100vh",
-              overflow: "auto",
+              width: window.innerWidth * 0.6,
+              height: window.innerHeight,
               textAlign: "center",
               paddingLeft: "20%",
               margin: 0
             }}
             ref="stageholder"
           >
-            {this.state.stage}
+            {this.stage}
           </div>
         </DivImg>
         <div>
@@ -759,19 +761,17 @@ class LabelingContent extends Component {
   }
 }
 const mapStateToProps = state => {
-  console.log("LABELING CONTENT STATE", state)
-  if (state.updateLabels.labels) {
-    return {
-      labels: state.updateLabels.labels
-    };
-  } else return;
+  console.log("LABELING", state);
+  let newProps = {};
+  newProps.labels = state.updateLabels.labels;
+  console.log("NEW PROPS", newProps);
+  return newProps;
 };
 const mapDispatchToProps = dispatch => {
-  console.log("LABELING MAPDISPATCHTOPROPS", dispatch);
   return {
     dispatch
   };
 };
 
 LabelingContent = connect(mapStateToProps, mapDispatchToProps)(LabelingContent);
-export default LabelingContent;
+export default withRouter(LabelingContent);
