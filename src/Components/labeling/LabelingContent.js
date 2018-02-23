@@ -123,7 +123,7 @@ class LabelingContent extends Component {
       imageheight: 0,
       originalimagewidth: 0,
       initial: 0,
-      imageinitial: 0,
+      imageInitial: 0,
       stage: null,
       layer: null,
       div: null,
@@ -156,6 +156,9 @@ class LabelingContent extends Component {
   }
 
   // Probably slows performance and may not be correct considering we are not using the real DOM
+  componentWillMount() {
+    this.updateImage()
+  }
   componentDidMount() {
     this.updateWindowDimensions();
     window.addEventListener("resize", this.updateWindowDimensions);
@@ -222,6 +225,7 @@ class LabelingContent extends Component {
     this.generateLabelButtons();
   }
   componentWillUpdate() {
+    this.updateImage(this.state.imageInitial);
     this.updateCanvas(this.state.initial);
   }
   componentWillUnmount() {
@@ -234,8 +238,6 @@ class LabelingContent extends Component {
       windowheight: window.innerHeight
     });
     this.updateImage();
-    this.updateCanvas();
-    this.drawRects();
     this.forceUpdate();
   }
   handleDoubleClickFromRect(event, id) {
@@ -252,7 +254,8 @@ class LabelingContent extends Component {
       imageheight: evt.height,
       originalimagewidth: evt.width
     });
-    this.updateCanvas(0);
+    this.updateCanvas();
+    this.drawRects();
   }
 
   handleDoubleClick(event) {
@@ -278,8 +281,7 @@ class LabelingContent extends Component {
         iddoubleclicked: newBoxes[newBoxes.length - 1].id,
         showModal: true
       });
-      this.drawRects();
-      this.updateCanvas();
+      this.updateImage();
       this.forceUpdate();
     }
   }
@@ -303,6 +305,7 @@ class LabelingContent extends Component {
       // we have an object to move
       this.handleRectMove(this.state.movingRect);
     }
+    this.updateImage();
   }
 
   changeDrawingBoxState(drawingState) {
@@ -372,10 +375,10 @@ class LabelingContent extends Component {
       // Also get the position of
       if (!isNaN(x) && !isNaN(y) && !isNaN(w)) {
         if (
-          (x > newx - 15 / this.state.imagewidth &&
-            x < newx + 15 / this.state.imagewidth &&
-            y > newy - 15 / this.state.imageheight &&
-            y < newy + 15 / this.state.imageheight) ||
+          (x > newx - 10 / this.state.imagewidth &&
+            x < newx + 10 / this.state.imagewidth &&
+            y > newy - 10 / this.state.imageheight &&
+            y < newy + 10 / this.state.imageheight) ||
           this.state.mouseInTopLeftCorner
         ) {
           // touching topLeft corner
@@ -383,10 +386,10 @@ class LabelingContent extends Component {
           this.setState({ mouseInTopLeftCorner: true });
         }
         if (
-          (x + w > newx - 15 / this.state.imagewidth &&
-            x + w < newx + 15 / this.state.imagewidth &&
-            y + h > newy - 15 / this.state.imageheight &&
-            y + h < newy + 15 / this.state.imageheight) ||
+          (x + w > newx - 10 / this.state.imagewidth &&
+            x + w < newx + 10 / this.state.imagewidth &&
+            y + h > newy - 10 / this.state.imageheight &&
+            y + h < newy + 10 / this.state.imageheight) ||
           this.state.mouseInBottomRightCorner
         ) {
           br = true;
@@ -427,9 +430,7 @@ class LabelingContent extends Component {
           this.setState({
             boxes: copyBoxes
           });
-          this.drawRects();
-          this.updateCanvas();
-          this.forceUpdate();
+          this.updateImage();
         } else if (tl) {
           // move x y to mouse position and change w/h
           let distx = 0;
@@ -450,9 +451,7 @@ class LabelingContent extends Component {
             this.setState({
               boxes: copyBoxes
             });
-            this.drawRects();
-            this.updateCanvas();
-            this.forceUpdate();
+            this.updateImage();
             return;
           }
           if (newx <= 1 / this.state.imagewidth) {
@@ -464,9 +463,7 @@ class LabelingContent extends Component {
             this.setState({
               boxes: copyBoxes
             });
-            this.drawRects();
-            this.updateCanvas();
-            this.forceUpdate();
+            this.updateImage();
             return;
           }
           if (newy <= 0.5 / this.state.imageheight) {
@@ -477,9 +474,7 @@ class LabelingContent extends Component {
             this.setState({
               boxes: copyBoxes
             });
-            this.drawRects();
-            this.updateCanvas();
-            this.forceUpdate();
+            this.updateImage();
             return;
           }
           if (
@@ -494,9 +489,7 @@ class LabelingContent extends Component {
             this.setState({
               boxes: copyBoxes
             });
-            this.drawRects();
-            this.updateCanvas();
-            this.forceUpdate();
+            this.updateImage();
             return;
           }
           if (newx > x + w - 1.0 / this.state.imagewidth) {
@@ -508,9 +501,7 @@ class LabelingContent extends Component {
             this.setState({
               boxes: copyBoxes
             });
-            this.drawRects();
-            this.updateCanvas();
-            this.forceUpdate();
+            this.updateImage();
             return;
           }
           if (newy > y + h - 1.0 / this.state.imageheight) {
@@ -522,9 +513,7 @@ class LabelingContent extends Component {
             this.setState({
               boxes: copyBoxes
             });
-            this.drawRects();
-            this.updateCanvas();
-            this.forceUpdate();
+            this.updateImage();
             return;
           }
           return;
@@ -561,9 +550,7 @@ class LabelingContent extends Component {
           this.setState({
             boxes: copyBoxes
           });
-          this.drawRects();
-          this.updateCanvas();
-          this.forceUpdate();
+          this.updateImage();
         }
       }
     }
@@ -606,16 +593,19 @@ class LabelingContent extends Component {
     }
   }
   updateImage(initial = 1) {
-    let newImage = (
-      <Img
-        src={this.props.image}
-        height={window.innerHeight}
-        width={window.innerWidth * 0.6}
-        onLoad={this.getImageSize}
-        space="fit"
-      />
-    );
-    this.image = newImage;
+    if (initial <= 1) {
+      this.setState({imageInitial: this.state.imageInitial + 1})
+      let newImage = (
+        <Img
+          src={this.props.image}
+          height={window.innerHeight}
+          width={window.innerWidth * 0.6}
+          onLoad={this.getImageSize}
+          space="fit"
+        />
+      );
+      this.image = newImage;
+    }
   }
   generateLabelButtons() {
     const sortableComponent = (
@@ -671,6 +661,7 @@ class LabelingContent extends Component {
     });
     this.drawRects();
     this.generateLabelButtons();
+    this.updateImage();
     this.updateCanvas();
   }
 
@@ -683,6 +674,7 @@ class LabelingContent extends Component {
     }
     this.setState({ showModal: false, iddoubleclicked: null });
     this.drawRects();
+    this.updateImage();
     this.updateCanvas();
   }
   getContentForModal() {
