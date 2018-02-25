@@ -26,9 +26,10 @@
   border: 2px solid rgba(77, 180, 209, 0.577);
   border-radius: 10px;
   padding: 10px;
+  padding-right: 25px;
   margin-left: 20px;
-  width: 35vw;
-  min-width: 35vw;
+  width: 34vw;
+  min-width: 34vw;
   height: 35vh;
   min-height: 35vh;
   float: left;
