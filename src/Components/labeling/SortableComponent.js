@@ -1,5 +1,4 @@
 import React, { Component } from "react";
-import { render } from "react-dom";
 import {
   SortableContainer,
   SortableElement,
@@ -35,7 +34,6 @@ const SelectedItem = SortableElement(({ value }) => (
 ));
 
 const SortableList = SortableContainer(({ items }) => {
-  console.log("sortable list Container:", items);
   return (
     <div>
       {items.map((value, index) => {
@@ -80,7 +78,6 @@ class SortableComponent extends Component {
     this.selectItem(index);
   };
   render() {
-    console.log("SORTABLE PROPS", this.props);
     return (
       <SortableList
         items={this.props.labels ? this.props.labels : []}
@@ -92,7 +89,6 @@ class SortableComponent extends Component {
   }
 }
 const mapStateToProps = state => {
-  console.log("SORTABLE STATE:", state);
   if (state.updateLabels.labels) {
     return {
       labels: state.updateLabels.labels
@@ -100,7 +96,6 @@ const mapStateToProps = state => {
   } else return;
 };
 const mapDispatchToProps = dispatch => {
-  console.log("SORTABLE MAPDISPATCHTOPROPS", dispatch);
   return {
     dispatch
   };

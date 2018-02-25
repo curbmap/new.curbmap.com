@@ -37,7 +37,6 @@ const styles = {
 class Nav extends Component {
   constructor(props) {
     super(props);
-    console.log("Nav this:", this);
     this.state = {
       height: 125,
       message: null,
@@ -56,8 +55,11 @@ class Nav extends Component {
     evt.target.classList.remove("hovering");
   }
   onMouseEnter(evt) {
-    this.setState({ height: 300 });
-    this.showMenu();
+    console.log(this.props);
+    if (this.props.location.pathname !== "/labeling") {
+      this.setState({ height: 300 });
+      this.showMenu();
+    }
   }
   showMenu() {
     this.getRandomMessage();
@@ -177,14 +179,13 @@ class Nav extends Component {
   chooseRandomMessage() {
     let messageKeys = Object.keys(messages);
     let randMessage = Math.round(Math.random() * messageKeys.length);
-    while (randMessage >= messageKeys.length){
+    while (randMessage >= messageKeys.length) {
       randMessage = Math.round(Math.random() * messageKeys.length);
     }
     return messages[messageKeys[randMessage]];
   }
   getRandomMessage() {
     const message = this.chooseRandomMessage();
-    console.log(message);
     this.setState({
       message: (
         <div
@@ -213,12 +214,8 @@ class Nav extends Component {
         </div>
       )
     });
-    console.log("Nav state in random message:", this.state);
   }
   render() {
-    console.log("Nav context:", this.context);
-    console.log("Nav state:", this.state);
-    console.log("Nav props:", this.props);
     return (
       <AnimateHeight
         height={this.state.height}
@@ -228,7 +225,7 @@ class Nav extends Component {
         style={styles.nav}
         ref="heightholder"
       >
-        <ImgBackground src={background} alt="A background picture of a curb"/>
+        <ImgBackground src={background} alt="A background picture of a curb" />
         {this.getMenu()}
         <br />
         {this.state.message}
@@ -238,7 +235,6 @@ class Nav extends Component {
   }
 }
 const mapStateToProps = state => {
-  console.log("NAV MAPSTATETOPROPS", state);
   return {
     logged_in: state.auth.logged_in,
     signed_up: state.auth.signed_up,
@@ -246,7 +242,6 @@ const mapStateToProps = state => {
   };
 };
 const mapDispatchToProps = dispatch => {
-  console.log("NAV MAPDISPATCHTOPROPS", dispatch);
   return {
     dispatch
   };

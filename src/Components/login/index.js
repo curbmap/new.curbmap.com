@@ -8,10 +8,8 @@ import { loggedIn } from "../../Actions/auth.action.creators";
 import "./login.css";
 
 let HOST_AUTH = "https://curbmap.com";
-let HOST_RES = "https://curbmap.com:50003";
 if (process.env.REACT_APP_STAGE === "dev") {
   HOST_AUTH = "http://localhost:8080";
-  HOST_RES = "http://localhost:8081";
 }
 
 const ImgLogo = styled.img`
@@ -52,7 +50,6 @@ const checkpassword = function(passValue) {
 class Login extends Component {
   constructor(props) {
     super(props);
-    console.log(this.props);
     this.changePassword = this.changePassword.bind(this);
     this.changeUsername = this.changeUsername.bind(this);
     this.formHandler = this.formHandler.bind(this);
@@ -86,12 +83,13 @@ class Login extends Component {
 
   formHandler(evt) {
     superagent
-      .post(HOST_AUTH+"/login")
+      .post(HOST_AUTH + "/login")
       .send({ username: this.state.username, password: this.state.password })
       .set("Content-Type", "application/x-www-form-urlencoded")
       .end((err, res) => {
         if (err) {
           alert("Error in sending password. Try again in a minute.");
+          return;
         }
         if (res.body.success === 1) {
           // emit the action

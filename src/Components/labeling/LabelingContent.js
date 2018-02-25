@@ -121,17 +121,14 @@ class LabelingContent extends Component {
       image: null,
       imagewidth: 0,
       imageheight: 0,
-      originalimagewidth: 0,
       initial: 0,
       imageInitial: 0,
       stage: null,
       layer: null,
-      div: null,
       drawingBox: false,
       boxes: [],
       labels: [],
       labelButtons: [],
-      restrs: [],
       movingRect: null,
       mouseLocation: {
         x: null,
@@ -156,17 +153,28 @@ class LabelingContent extends Component {
   }
 
   // Probably slows performance and may not be correct considering we are not using the real DOM
-  componentWillMount() {
-    this.updateImage()
-  }
   componentDidMount() {
-    this.updateWindowDimensions();
     window.addEventListener("resize", this.updateWindowDimensions);
     window.addEventListener("keypress", this.keyPressed);
     window.addEventListener("keydown", this.keyDown);
+    this.updateImage();
+    this.updateCanvas();
   }
+  componentWillUnmount() {
+    window.removeEventListener("resize", this.updateWindowDimensions);
+  }
+  updateWindowDimensions() {
+    this.generateLabelButtons();
+    this.setState({
+      windowwidth: window.innerWidth,
+      windowheight: window.innerHeight
+    });
+    this.updateImage();
+    this.drawRects();
+    this.updateCanvas();
+  }
+
   keyPressed(evt) {
-    console.log(evt.key);
     switch (evt.key) {
       case "a":
         this.props.previous();
@@ -185,7 +193,6 @@ class LabelingContent extends Component {
     }
   }
   keyDown(evt) {
-    console.log(evt);
     switch (evt.keyCode) {
       case 37:
         //left arrow
@@ -208,10 +215,8 @@ class LabelingContent extends Component {
     let newLabels = this.props.labels;
     for (let i = 0; i < newLabels.length; i++) {
       const label = newLabels[i];
-      console.log(label);
       if (label.selected === true) {
         let idx = findBox(label.id, newBoxes);
-        console.log("IDX", idx);
         newBoxes.splice(idx, 1);
         newLabels.splice(i, 1);
         break;
@@ -219,26 +224,9 @@ class LabelingContent extends Component {
     }
     this.setState({ boxes: newBoxes });
     this.props.dispatch(changeLabels(newLabels));
-    this.updateImage();
-    this.updateCanvas();
+    this.generateLabelButtons();
     this.drawRects();
-    this.generateLabelButtons();
-  }
-  componentWillUpdate() {
-    this.updateImage(this.state.imageInitial);
-    this.updateCanvas(this.state.initial);
-  }
-  componentWillUnmount() {
-    window.removeEventListener("resize", this.updateWindowDimensions);
-  }
-  updateWindowDimensions() {
-    this.generateLabelButtons();
-    this.setState({
-      windowwidth: window.innerWidth,
-      windowheight: window.innerHeight
-    });
-    this.updateImage();
-    this.forceUpdate();
+    this.updateCanvas();
   }
   handleDoubleClickFromRect(event, id) {
     this.setState({
@@ -248,14 +236,11 @@ class LabelingContent extends Component {
   }
 
   getImageSize(evt) {
-    console.log("imagesize:", evt);
     this.setState({
       imagewidth: evt.width,
       imageheight: evt.height,
       originalimagewidth: evt.width
     });
-    this.updateCanvas();
-    this.drawRects();
   }
 
   handleDoubleClick(event) {
@@ -281,8 +266,8 @@ class LabelingContent extends Component {
         iddoubleclicked: newBoxes[newBoxes.length - 1].id,
         showModal: true
       });
-      this.updateImage();
-      this.forceUpdate();
+      this.updateCanvas();
+      this.drawRects();
     }
   }
 
@@ -301,11 +286,21 @@ class LabelingContent extends Component {
         y
       }
     });
-    if (this.state.movingRect != null) {
-      // we have an object to move
-      this.handleRectMove(this.state.movingRect);
+    if (
+      x <= 0 ||
+      y <= 0 ||
+      x >= this.imagewidth - 1 ||
+      y >= this.imageheight - 1
+    ) {
+      this.handleMouseUp(event);
+    } else {
+      if (this.state.movingRect != null) {
+        // we have an object to move
+        this.handleRectMove(this.state.movingRect);
+      }
     }
-    this.updateImage();
+    this.updateCanvas();
+    this.drawRects();
   }
 
   changeDrawingBoxState(drawingState) {
@@ -316,26 +311,49 @@ class LabelingContent extends Component {
 
   drawRects() {
     let values = [];
-    this.state.boxes.forEach(box => {
-      values.push(
-        <LabelBox
-          x={box.x * this.state.imagewidth}
-          y={box.y * this.state.imageheight}
-          type={box.type}
-          width={box.width * this.state.imagewidth}
-          height={box.height * this.state.imageheight}
-          movingRect={this.movingRect.bind(this)}
-          stoppedMovingRect={this.stoppedMovingRect.bind(this)}
-          doubleClick={this.handleDoubleClickFromRect.bind(this)}
-          style={{
-            zIndex: 100
-          }}
-          id={box.id}
-        />
-      );
+    let lastValue = null;
+    let reveresed = this.props.labels.slice().reverse();
+    reveresed.forEach((label, i, arr) => {
+      let idx = findBox(label.id, this.state.boxes);
+      let box = this.state.boxes[idx];
+      if (label.selected) {
+        lastValue = (
+          <LabelBox
+            x={box.x * this.state.imagewidth}
+            y={box.y * this.state.imageheight}
+            type={box.type}
+            width={box.width * this.state.imagewidth}
+            height={box.height * this.state.imageheight}
+            movingRect={this.movingRect.bind(this)}
+            stoppedMovingRect={this.stoppedMovingRect.bind(this)}
+            doubleClick={this.handleDoubleClickFromRect.bind(this)}
+            zIndex={200}
+            id={box.id}
+            key={`box${box.id}`}
+          />
+        );
+      } else {
+        values.push(
+          <LabelBox
+            x={box.x * this.state.imagewidth}
+            y={box.y * this.state.imageheight}
+            type={box.type}
+            width={box.width * this.state.imagewidth}
+            height={box.height * this.state.imageheight}
+            movingRect={this.movingRect.bind(this)}
+            stoppedMovingRect={this.stoppedMovingRect.bind(this)}
+            doubleClick={this.handleDoubleClickFromRect.bind(this)}
+            zIndex={90 + i}
+            id={box.id}
+            key={`box${box.id}`}
+          />
+        );
+      }
     });
+    if (lastValue) {
+      values.push(lastValue);
+    }
     this.setState({ labelBoxes: values });
-    this.forceUpdate();
   }
 
   handleMouseUp(evt) {
@@ -360,6 +378,9 @@ class LabelingContent extends Component {
     const copyBoxes = this.state.boxes.slice();
     const idx = findBox(id, copyBoxes);
     const groupObj = this.state.stageRef.find(`#${id}`);
+    if (!groupObj || groupObj.length < 1) {
+      return;
+    }
     const boxObj = groupObj[0].children[0];
     if (boxObj !== null && boxObj !== undefined && idx >= 0) {
       const x = boxObj.getX() * 1.0 / this.state.imagewidth;
@@ -373,7 +394,7 @@ class LabelingContent extends Component {
       let tl = false;
       let br = false;
       // Also get the position of
-      if (!isNaN(x) && !isNaN(y) && !isNaN(w)) {
+      if (!isNaN(x) && !isNaN(y) && !isNaN(w) && Math.abs(newx - lastx) <= 1 && Math.abs(newy - lasty) <= 1) {
         if (
           (x > newx - 10 / this.state.imagewidth &&
             x < newx + 10 / this.state.imagewidth &&
@@ -398,31 +419,31 @@ class LabelingContent extends Component {
         if (!br && !tl) {
           const distX = newx - lastx;
           const distY = newy - lasty;
-          if (copyBoxes[idx].x + distX > 0.5 / this.state.imagewidth) {
-            if (newx < 1 - copyBoxes[idx].width - 0.5 / this.state.imagewidth) {
+          if (copyBoxes[idx].x + distX > 0.1 / this.state.imagewidth) {
+            if (newx < 1 - copyBoxes[idx].width - 0.1 / this.state.imagewidth) {
               copyBoxes[idx].x += distX;
             } else if (
               newx >=
-              1 - copyBoxes[idx].width - 0.5 / this.state.imagewidth
+              1 - copyBoxes[idx].width - 0.1 / this.state.imagewidth
             ) {
               copyBoxes[idx].x =
-                1 - copyBoxes[idx].width - 0.5 / this.state.imagewidth;
+                1 - copyBoxes[idx].width - 0.1 / this.state.imagewidth;
             }
           } else {
             copyBoxes[idx].x = 1 / this.state.imagewidth;
           }
-          if (copyBoxes[idx].y + distY > 0.5 / this.state.imageheight) {
+          if (copyBoxes[idx].y + distY > 0.1 / this.state.imageheight) {
             if (
               newy <
-              1 - copyBoxes[idx].height - 0.5 / this.state.imageheight
+              1 - copyBoxes[idx].height - 0.1 / this.state.imageheight
             ) {
               copyBoxes[idx].y += distY;
             } else if (
               newy >=
-              1 - copyBoxes[idx].height - 0.5 / this.state.imageheight
+              1 - copyBoxes[idx].height - 0.1 / this.state.imageheight
             ) {
               copyBoxes[idx].y =
-                1 - copyBoxes[idx].height - 0.5 / this.state.imageheight;
+                1 - copyBoxes[idx].height - 0.1 / this.state.imageheight;
             }
           } else {
             copyBoxes[idx].y = 0.5 / this.state.imageheight;
@@ -430,7 +451,8 @@ class LabelingContent extends Component {
           this.setState({
             boxes: copyBoxes
           });
-          this.updateImage();
+          this.updateCanvas();
+          this.drawRects();
         } else if (tl) {
           // move x y to mouse position and change w/h
           let distx = 0;
@@ -442,7 +464,6 @@ class LabelingContent extends Component {
             newx <= x + w - 1.0 / this.state.imagewidth &&
             Math.abs(newx - x) > 0.5 / this.state.imagewidth
           ) {
-            console.log("here ", newx, x);
             // the top left can move to 1 or 2 pixels left of the right side (otherwise it's not a box)
             distx = x - newx;
             neww += distx;
@@ -451,7 +472,8 @@ class LabelingContent extends Component {
             this.setState({
               boxes: copyBoxes
             });
-            this.updateImage();
+            this.drawRects();
+            this.updateCanvas();
             return;
           }
           if (newx <= 1 / this.state.imagewidth) {
@@ -463,7 +485,8 @@ class LabelingContent extends Component {
             this.setState({
               boxes: copyBoxes
             });
-            this.updateImage();
+            this.updateCanvas();
+            this.drawRects();
             return;
           }
           if (newy <= 0.5 / this.state.imageheight) {
@@ -474,7 +497,8 @@ class LabelingContent extends Component {
             this.setState({
               boxes: copyBoxes
             });
-            this.updateImage();
+            this.drawRects();
+            this.updateCanvas();
             return;
           }
           if (
@@ -489,7 +513,8 @@ class LabelingContent extends Component {
             this.setState({
               boxes: copyBoxes
             });
-            this.updateImage();
+            this.drawRects();
+            this.updateCanvas();
             return;
           }
           if (newx > x + w - 1.0 / this.state.imagewidth) {
@@ -501,7 +526,8 @@ class LabelingContent extends Component {
             this.setState({
               boxes: copyBoxes
             });
-            this.updateImage();
+            this.drawRects();
+            this.updateCanvas();
             return;
           }
           if (newy > y + h - 1.0 / this.state.imageheight) {
@@ -513,7 +539,8 @@ class LabelingContent extends Component {
             this.setState({
               boxes: copyBoxes
             });
-            this.updateImage();
+            this.drawRects();
+            this.updateCanvas();
             return;
           }
           return;
@@ -522,11 +549,9 @@ class LabelingContent extends Component {
           let disty = h;
           let neww = w;
           let newh = h;
-          console.log({ newx, neww, newh });
           if (newx < 1 && newx >= x + 1.0 / this.state.imagewidth) {
             // the top left can move to 1 or 2 pixels left of the right side (otherwise it's not a box)
             distx = Math.abs(x - newx);
-            console.log("x1", distx);
           }
           if (newx >= 1) {
             distx = Math.abs(x - 1);
@@ -550,63 +575,65 @@ class LabelingContent extends Component {
           this.setState({
             boxes: copyBoxes
           });
-          this.updateImage();
+          this.drawRects();
+          this.updateCanvas();
         }
       }
     }
   }
-  stage = null;
-  image = null;
   updateCanvas(num = 0) {
-    //this.drawRects();
-    console.log(this.props);
-    const newStage = (
-      <Stage
-        width={
-          this.state.imagewidth !== 0
-            ? this.state.imagewidth
-            : window.innerWidth * 0.4
-        }
-        height={window.innerHeight}
-        style={{
-          textAlign: "center"
-        }}
-        onDblClick={this.handleDoubleClick.bind(this)}
-        onMouseMove={this.handleMouseMove}
-        onContentMouseUp={this.handleMouseUp}
-        id="stageid"
-      >
-        <Layer>
-          {this.image}
-          {this.state.labelBoxes}
-        </Layer>
-      </Stage>
-    );
-    console.log(newStage);
-    console.log(this.props);
-    this.stage = newStage;
     if (num === 0) {
-      console.log("setting state");
-      //console.log(newStage);
-      //console.log(newStage.getStage());
-      // this.forceUpdate();
-    }
-  }
-  updateImage(initial = 1) {
-    if (initial <= 1) {
-      this.setState({imageInitial: this.state.imageInitial + 1})
-      let newImage = (
-        <Img
-          src={this.props.image}
+      const newStage = (
+        <Stage
+          width={
+            this.state.imagewidth !== 0
+              ? this.state.imagewidth
+              : window.innerWidth * 0.5
+          }
           height={window.innerHeight}
-          width={window.innerWidth * 0.6}
-          onLoad={this.getImageSize}
-          space="fit"
-        />
+          style={{
+            textAlign: "center"
+          }}
+          onDblClick={this.handleDoubleClick.bind(this)}
+          onMouseMove={this.handleMouseMove}
+          onContentMouseUp={this.handleMouseUp}
+        >
+          <Layer>
+            {this.state.image}
+            {this.state.labelBoxes}
+          </Layer>
+        </Stage>
       );
-      this.image = newImage;
+      this.setState({ stage: newStage, initial: this.state.initial + 1 });
     }
   }
+
+  updateImage(num = 0) {
+    let newImage = (
+      <Img
+        key={this.state.imageInitial}
+        number={this.state.imageInitial}
+        src={this.props.image}
+        height={window.innerHeight}
+        width={window.innerWidth * 0.5}
+        onLoad={this.getImageSize}
+        space="fit"
+      />
+    );
+    // only set state directly first time through, otherwise use setState
+    if (this.state.imageInitial === 0) {
+      this.state.image = newImage;
+      this.state.imageInitial = this.state.imageInitial + 1;
+    } else {
+      this.setState({
+        image: newImage,
+        imageInitial: this.state.imageInitial + 1
+      });
+    }
+    this.drawRects();
+    this.updateCanvas();
+  }
+
   generateLabelButtons() {
     const sortableComponent = (
       <SortableComponent
@@ -619,7 +646,6 @@ class LabelingContent extends Component {
   }
 
   reorderedState(items) {
-    console.log("reordered state: ", items);
     //this.setState({ labels: items });
   }
 
@@ -660,9 +686,8 @@ class LabelingContent extends Component {
       selectType: null
     });
     this.drawRects();
-    this.generateLabelButtons();
-    this.updateImage();
     this.updateCanvas();
+    this.generateLabelButtons();
   }
 
   cancel(evt) {
@@ -674,7 +699,6 @@ class LabelingContent extends Component {
     }
     this.setState({ showModal: false, iddoubleclicked: null });
     this.drawRects();
-    this.updateImage();
     this.updateCanvas();
   }
   getContentForModal() {
@@ -702,8 +726,9 @@ class LabelingContent extends Component {
   }
 
   render() {
-    if (this.stage) {
-      console.log("THIS STAGE:", this.stage);
+    if (this.state.stage === null) {
+      this.updateCanvas();
+      return <div />;
     }
     return (
       <div>
@@ -716,7 +741,6 @@ class LabelingContent extends Component {
           <p>{this.getContentForModal()}</p>
         </Modal>
         <DivImg
-          ref="imageplane"
           style={{
             width: window.innerWidth * 0.6,
             height: window.innerHeight
@@ -732,7 +756,7 @@ class LabelingContent extends Component {
             }}
             ref="stageholder"
           >
-            {this.stage}
+            {this.state.stage}
           </div>
         </DivImg>
         <div>
@@ -753,10 +777,8 @@ class LabelingContent extends Component {
   }
 }
 const mapStateToProps = state => {
-  console.log("LABELING", state);
   let newProps = {};
   newProps.labels = state.updateLabels.labels;
-  console.log("NEW PROPS", newProps);
   return newProps;
 };
 const mapDispatchToProps = dispatch => {

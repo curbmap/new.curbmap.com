@@ -58,7 +58,7 @@ const mapStateToProps = state => {
       <Route
         exact
         path="/labeling"
-        render={props => <Labeling props={props} />}
+        render={props => <Labeling props={state} />}
       />
     );
   }

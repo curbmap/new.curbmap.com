@@ -24,7 +24,7 @@ class Img extends Component {
 
   loadImg(src) {
     if (!src) {
-      console.log("SOURCE:", src)
+      console.log("SOURCE:", src);
       throw new Error("Expected image src instead saw " + typeof src);
     }
 
@@ -118,7 +118,7 @@ class Img extends Component {
 
     return (
       <Image
-        id="background"
+        key={this.props.number}
         image={this.state.image}
         x={pos.x}
         y={pos.y}

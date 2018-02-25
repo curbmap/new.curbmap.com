@@ -4,25 +4,32 @@ import { connect } from "react-redux";
 import superagent from "superagent";
 import { updateImage } from "../../Actions/image.action.creators";
 import LabelingContent from "./LabelingContent.js";
-let HOST_AUTH = "https://curbmap.com";
+import loading from "./loading.svg";
+import "./loading.css";
+
 let HOST_RES = "https://curbmap.com:50003";
 if (process.env.REACT_APP_STAGE === "dev") {
-  HOST_AUTH = "http://localhost:8080";
   HOST_RES = "http://localhost:8081";
 }
 class Labeling extends Component {
   constructor(props) {
     super(props);
     this.save = this.save.bind(this);
-    this.next = this.save.bind(this);
+    this.next = this.next.bind(this);
+    this.previous = this.previous.bind(this);
     this.gotImage = this.gotImage.bind(this);
+    this.state = {
+      imageUpdated: 0
+    };
   }
+
   save(state) {
     console.log(state);
   }
   previous() {}
   next() {}
-  componentWillMount() {
+  componentDidMount() {
+    console.log("GETTING IMAGE");
     this.getImage();
   }
   getImage() {
@@ -38,22 +45,40 @@ class Labeling extends Component {
         console.log("ERR", err);
       });
   }
+  counter = 0;
   gotImage(res) {
-    this.props.dispatch(updateImage(res.body));
+    if (this.counter === 0) {
+      console.log("GOT IMAGE");
+      this.counter = this.counter + 1;
+      this.dispatchOnCounter(res.body);
+    }
+  }
+  dispatchOnCounter(body) {
+    if (this.counter === 1) {
+      this.props.dispatch(updateImage(body));
+    }
   }
   render() {
-    console.log("HERE IN RENDER LABELING");
-    return (
-      <div onKeyPress={e => this.handleKeyPress(e)}>
-        <LabelingContent
-          previous={this.previous}
-          next={this.next}
-          save={this.save}
-          image={this.props.image}
-          imageid={this.props.imageid}
-        />
-      </div>
-    );
+    if (this.props.image) {
+      return (
+        <div>
+          <LabelingContent
+            key={`LabelingContent${this.counter}`}
+            image={this.props.image}
+            imageid={this.props.imageid}
+            previous={this.previous}
+            next={this.next}
+            save={this.save}
+          />
+        </div>
+      );
+    } else {
+      return (
+        <div className="loadingholder">
+          <img src={loading} className="loading" alt="loading the labeling component..." />
+        </div>
+      );
+    }
   }
 }
 
@@ -67,7 +92,7 @@ const mapStateToProps = state => {
   newProps.signed_up = false;
   newProps.image = state.updateImage.image;
   newProps.imageid = state.updateImage.imageid;
-  console.log("NEW PROPS", newProps)
+  console.log("NEW PROPS", newProps);
   return newProps;
 };
 const mapDispatchToProps = dispatch => {
