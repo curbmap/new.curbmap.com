@@ -5,17 +5,56 @@
   padding: 0px;
   margin: 0px;
 }
-
-.labels {
+.directions {
   color: white;
-  border: 2px solid #4DB4D1;
+  font-weight: 200;
+  border: 2px solid rgba(77, 180, 209, 0.577);
   border-radius: 10px;
-  padding-left: 5px;
+  padding: 10px;
   margin-left: 20px;
-  padding-right: 5px;
   width: 35vw;
   min-width: 35vw;
-  height: 59vh;
+  height: 5vh;
+  min-height: 5vh;
+  float: left;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+.directions-expanded {
+  color: white;
+  font-weight: 200;
+  border: 2px solid rgba(77, 180, 209, 0.577);
+  border-radius: 10px;
+  padding: 10px;
+  margin-left: 20px;
+  width: 35vw;
+  min-width: 35vw;
+  height: 35vh;
+  min-height: 35vh;
+  float: left;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+.directions-title {
+  margin-top: 0px;
+  padding-top: 0px;
+  margin-bottom: 0px;
+}
+.info {
+  background: clear;
+  vertical-align: bottom;
+  margin-left: 5px;
+}
+.labels {
+  color: white;
+  font-weight: 400;
+  border: 2px solid rgba(77, 180, 209, 0.577);
+  border-radius: 10px;
+  padding: 10px;
+  margin-left: 20px;
+  width: 35vw;
+  min-width: 35vw;
+  height: 50vh;
   float: left;
   overflow-y: auto;
   overflow-x: hidden;
@@ -28,7 +67,40 @@
   height: 40vh;
   float: left;
   padding-left: 5px;
+  padding-top: 5px;
   margin-left: 20px;
+}
+.restrs button {
+  width: 140px;
+  height: 40px;
+  font-family: 'Roboto-Regular';
+  font-weight: bold;
+  font-size: 12pt;
+  border-radius: 8px;
+  border: 0px;
+  margin-right: 5px;
+}
+.restrs button:hover {
+  border: 2px solid white;
+}
+
+.restrs button.next {
+  color: white;
+  background-color: red;
+}
+
+.restrs button.save {
+  color: white;
+  background-color: green;
+}
+
+.restrs button.del {
+  color: #4DB4D1;
+  background-color: rgba(140, 20, 20, 0.675);
+}
+
+.restrs button:visited {
+  outline: none;
 }
 
 select {

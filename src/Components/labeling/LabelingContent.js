@@ -8,6 +8,8 @@ import labels from "../labeling/Labels";
 import SortableComponent from "./SortableComponent";
 import { changeLabels } from "../../Actions/label.action.creators";
 import Img from "./Img";
+import info from "./i.svg";
+import xinfo from "./x.svg";
 import "./labeling.css";
 
 function findBox(id, boxes) {
@@ -36,6 +38,9 @@ const styles = {
       border: "5px solid #888",
       background: "#ccc",
       width: "60%",
+      minWidth: "500px",
+      height: "60%",
+      minHeight: "300px",
       overflow: "auto",
       WebkitOverflowScrolling: "touch",
       borderRadius: "8px",
@@ -73,7 +78,8 @@ class LabelingContent extends Component {
       showModal: false,
       selectType: null,
       windowwidth: 0,
-      windowheight: 0
+      windowheight: 0,
+      directions: null
     };
     this.handleMouseUp = this.handleMouseUp.bind(this);
     this.updateWindowDimensions = this.updateWindowDimensions.bind(this);
@@ -81,6 +87,10 @@ class LabelingContent extends Component {
     this.handleMouseMove = this.handleMouseMove.bind(this);
     this.reorderedState = this.reorderedState.bind(this);
     this.keyPressed = this.keyPressed.bind(this);
+    this.save = this.save.bind(this);
+    this.next = this.next.bind(this);
+    this.deleteBox = this.deleteBox.bind(this);
+    this.infoClicked = this.infoClicked.bind(this);
   }
 
   // Probably slows performance and may not be correct considering we are not using the real DOM
@@ -108,10 +118,10 @@ class LabelingContent extends Component {
   keyPressed(evt) {
     switch (evt.key) {
       case "n":
-        this.props.next();
+        this.next(evt);
         return;
       case "S":
-        this.props.save(this.state);
+        this.save(evt);
         return;
       case "X":
         this.deleteBox();
@@ -534,6 +544,12 @@ class LabelingContent extends Component {
     }
   }
 
+  save(evt) {
+    this.props.save(this.state.boxes);
+  }
+  next(evt) {
+    this.props.next(this.props.imageid);
+  }
   updateImage(num = 0) {
     let newImage = (
       <Img
@@ -658,7 +674,50 @@ class LabelingContent extends Component {
       </div>
     );
   }
-
+  infoClicked(evt) {
+    if (this.state.directions) {
+      this.setState({ directions: null });
+    } else {
+      this.setState({
+        directions: (
+          <ol>
+            <li>
+              {"Double click anywhere on the image to the left to create a box"}
+            </li>
+            <li>
+              {"You will then be asked to label what will go in that box."}
+            </li>
+            <li>{"Then you can move and resize the box."}</li>
+            <li>
+              {
+                "To resize the box, click on either the top left corner or the bottom right."
+              }
+            </li>
+            <li>
+              {
+                "If you realize, later that you mislabeled a box, just select its label on the right (hold down on your mouse button over the label) and then double click the box on the image, you can relabel it."
+              }
+            </li>
+            <li>
+              {
+                'If you label a box and think it was incorrect and unnecessary, just select its label on the right and click the "Delete box" button.'
+              }
+            </li>
+            <li>
+              {
+                'When you are satisfied with your labels, you can click the "Submit and next" button below.'
+              }
+            </li>
+            <li>
+              {
+                'If you decide you do not like the image you are working on, just click "Don\'t save, next".'
+              }
+            </li>
+          </ol>
+        )
+      });
+    }
+  }
   render() {
     if (this.state.stage === null) {
       this.updateCanvas();
@@ -695,14 +754,41 @@ class LabelingContent extends Component {
           </div>
         </div>
         <div>
+          <div
+            className={
+              this.state.directions ? "directions-expanded" : "directions"
+            }
+          >
+            <h4 className="directions-title">
+              {"Directions"}
+              <img
+                src={this.state.directions ? xinfo : info}
+                alt="information"
+                width={20}
+                height={20}
+                onClick={this.infoClicked}
+                className="info"
+              />
+            </h4>
+            <br />
+            {this.state.directions}
+          </div>
           <div className="labels">
-            <h4>{"Labels (scrolling... to select, hold down your mouse button over a label, it will being hovering):"}</h4>
+            {
+              "Labels (scrolling... to select, hold down your mouse button over a label, it will being hovering):"
+            }
             {this.state.labelButtons}
           </div>
           <div className="restrs">
-            <button className="next">Don't save, next</button>
-            <button className="save">Submit and next</button>
-            <button className="del">Delete box</button>
+            <button className="next" onClick={this.next}>
+              Don't save, next
+            </button>
+            <button className="save" onClick={this.save}>
+              Submit and next
+            </button>
+            <button className="del" onClick={this.deleteBox}>
+              Delete box
+            </button>
             <h4>{"Shortcut Keys:"}</h4>
             n = next<br />
             S = Save (note that it's capital)<br />
