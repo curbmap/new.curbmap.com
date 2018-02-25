@@ -1,7 +1,6 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
-import styled from "styled-components";
 import { Stage, Layer } from "react-konva";
 import Modal from "react-modal";
 import LabelBox from "./LabelBox";
@@ -9,6 +8,7 @@ import labels from "../labeling/Labels";
 import SortableComponent from "./SortableComponent";
 import { changeLabels } from "../../Actions/label.action.creators";
 import Img from "./Img";
+import "./labeling.css";
 
 function findBox(id, boxes) {
   for (let i = 0; i < boxes.length; i += 1) {
@@ -19,75 +19,6 @@ function findBox(id, boxes) {
   return -1;
 }
 
-const DivImg = styled.div`
-  float: left;
-  align-content: center;
-  align: center;
-  textalign: center;
-  padding: 0px;
-  margin: 0px;
-`;
-
-const DivLabels = styled.div`
-  border: 2px solid black;
-  border-radius: 10px;
-  padding-left: 5px;
-  width: 35vw;
-  height: 59vh;
-  float: left;
-  overflow-y: auto;
-`;
-const DivRestrs = styled.div`
-  width: 35vw;
-  height: 40vh;
-  float: left;
-  padding-left: 5px;
-`;
-
-const Select = styled.select`
-  -webkit-user-select: none;
-  -moz-user-select: none;
-  -webkit-padding-end: 25px;
-  -moz-padding-end: 25px;
-  -webkit-padding-start: 5px;
-  -moz-padding-start: 5px;
-  background-color: #707575;
-  background-position: center right;
-  background-repeat: no-repeat;
-  border: 1px solid #aaa;
-  border-radius: 5px;
-  box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.1);
-  color: #fff;
-  font-size: inherit;
-  margin: 0;
-  overflow: hidden;
-  padding-top: 3px;
-  padding-bottom: 3px;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-`;
-const ButtonOk = styled.button`
-  position: absolute;
-  left: 20px;
-  bottom: 20px;
-  width: 150px;
-  height: 100px;
-  color: white;
-  font-size: 15pt;
-  background-color: green;
-  border-radius: 8px;
-`;
-const ButtonCancel = styled.button`
-  position: absolute;
-  right: 20px;
-  bottom: 20px;
-  width: 150px;
-  height: 100px;
-  color: white;
-  font-size: 15pt;
-  background-color: gray;
-  border-radius: 8px;
-`;
 const styles = {
   modalStyle: {
     overlay: {
@@ -176,10 +107,7 @@ class LabelingContent extends Component {
 
   keyPressed(evt) {
     switch (evt.key) {
-      case "a":
-        this.props.previous();
-        return;
-      case "d":
+      case "n":
         this.props.next();
         return;
       case "S":
@@ -319,6 +247,7 @@ class LabelingContent extends Component {
       if (label.selected) {
         lastValue = (
           <LabelBox
+            selected={true}
             x={box.x * this.state.imagewidth}
             y={box.y * this.state.imageheight}
             type={box.type}
@@ -335,6 +264,7 @@ class LabelingContent extends Component {
       } else {
         values.push(
           <LabelBox
+            selected={false}
             x={box.x * this.state.imagewidth}
             y={box.y * this.state.imageheight}
             type={box.type}
@@ -394,7 +324,13 @@ class LabelingContent extends Component {
       let tl = false;
       let br = false;
       // Also get the position of
-      if (!isNaN(x) && !isNaN(y) && !isNaN(w) && Math.abs(newx - lastx) <= 1 && Math.abs(newy - lasty) <= 1) {
+      if (
+        !isNaN(x) &&
+        !isNaN(y) &&
+        !isNaN(w) &&
+        Math.abs(newx - lastx) <= 1 &&
+        Math.abs(newy - lasty) <= 1
+      ) {
         if (
           (x > newx - 10 / this.state.imagewidth &&
             x < newx + 10 / this.state.imagewidth &&
@@ -419,34 +355,24 @@ class LabelingContent extends Component {
         if (!br && !tl) {
           const distX = newx - lastx;
           const distY = newy - lasty;
-          if (copyBoxes[idx].x + distX > 0.1 / this.state.imagewidth) {
-            if (newx < 1 - copyBoxes[idx].width - 0.1 / this.state.imagewidth) {
+          if (copyBoxes[idx].x + distX > 0) {
+            if (copyBoxes[idx].x + distX < 1 - copyBoxes[idx].width) {
               copyBoxes[idx].x += distX;
-            } else if (
-              newx >=
-              1 - copyBoxes[idx].width - 0.1 / this.state.imagewidth
-            ) {
-              copyBoxes[idx].x =
-                1 - copyBoxes[idx].width - 0.1 / this.state.imagewidth;
+            } else {
+              //
+              copyBoxes[idx].x = 1 - copyBoxes[idx].width;
             }
           } else {
-            copyBoxes[idx].x = 1 / this.state.imagewidth;
+            copyBoxes[idx].x = 0;
           }
-          if (copyBoxes[idx].y + distY > 0.1 / this.state.imageheight) {
-            if (
-              newy <
-              1 - copyBoxes[idx].height - 0.1 / this.state.imageheight
-            ) {
+          if (copyBoxes[idx].y + distY > 0) {
+            if (copyBoxes[idx].y + distY < 1 - copyBoxes[idx].height) {
               copyBoxes[idx].y += distY;
-            } else if (
-              newy >=
-              1 - copyBoxes[idx].height - 0.1 / this.state.imageheight
-            ) {
-              copyBoxes[idx].y =
-                1 - copyBoxes[idx].height - 0.1 / this.state.imageheight;
+            } else {
+              copyBoxes[idx].y = 1 - copyBoxes[idx].height;
             }
           } else {
-            copyBoxes[idx].y = 0.5 / this.state.imageheight;
+            copyBoxes[idx].y = 0;
           }
           this.setState({
             boxes: copyBoxes
@@ -588,7 +514,7 @@ class LabelingContent extends Component {
           width={
             this.state.imagewidth !== 0
               ? this.state.imagewidth
-              : window.innerWidth * 0.5
+              : window.innerWidth * 0.4
           }
           height={window.innerHeight}
           style={{
@@ -615,7 +541,7 @@ class LabelingContent extends Component {
         number={this.state.imageInitial}
         src={this.props.image}
         height={window.innerHeight}
-        width={window.innerWidth * 0.5}
+        width={window.innerWidth * 0.4}
         onLoad={this.getImageSize}
         space="fit"
       />
@@ -705,7 +631,7 @@ class LabelingContent extends Component {
     return (
       <div>
         <div>
-          <Select onChange={this.handleSelectChange.bind(this)}>
+          <select onChange={this.handleSelectChange.bind(this)}>
             {Object.keys(labels).map(key => {
               return (
                 <option value={key} key={key}>
@@ -713,14 +639,22 @@ class LabelingContent extends Component {
                 </option>
               );
             })}
-          </Select>
+          </select>
         </div>
-        <ButtonOk value="done" onClick={this.done.bind(this)}>
+        <button
+          className="button-ok"
+          value="done"
+          onClick={this.done.bind(this)}
+        >
           {" Done! "}
-        </ButtonOk>
-        <ButtonCancel value="cancel" onClick={this.cancel.bind(this)}>
+        </button>
+        <button
+          className="button-cancel"
+          value="cancel"
+          onClick={this.cancel.bind(this)}
+        >
           {" Cancel "}
-        </ButtonCancel>
+        </button>
       </div>
     );
   }
@@ -740,15 +674,16 @@ class LabelingContent extends Component {
           <h2>{this.getTitleForModal()}</h2>
           <p>{this.getContentForModal()}</p>
         </Modal>
-        <DivImg
+        <div
+          className="labeling-image"
           style={{
-            width: window.innerWidth * 0.6,
+            width: window.innerWidth * 0.5,
             height: window.innerHeight
           }}
         >
           <div
             style={{
-              width: window.innerWidth * 0.6,
+              width: window.innerWidth * 0.5,
               height: window.innerHeight,
               textAlign: "center",
               paddingLeft: "20%",
@@ -758,19 +693,21 @@ class LabelingContent extends Component {
           >
             {this.state.stage}
           </div>
-        </DivImg>
+        </div>
         <div>
-          <DivLabels>
-            <h4>{"Labels (scrolling):"}</h4>
+          <div className="labels">
+            <h4>{"Labels (scrolling... to select, hold down your mouse button over a label, it will being hovering):"}</h4>
             {this.state.labelButtons}
-          </DivLabels>
-          <DivRestrs>
-            <h4>{"Keys:"}</h4>
-            a = previous<br />
-            d = next<br />
+          </div>
+          <div className="restrs">
+            <button className="next">Don't save, next</button>
+            <button className="save">Submit and next</button>
+            <button className="del">Delete box</button>
+            <h4>{"Shortcut Keys:"}</h4>
+            n = next<br />
             S = Save (note that it's capital)<br />
             X = Remove a box (you first have to select one on the Labels list)
-          </DivRestrs>
+          </div>
         </div>
       </div>
     );

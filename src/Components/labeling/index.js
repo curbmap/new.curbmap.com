@@ -74,8 +74,14 @@ class Labeling extends Component {
       );
     } else {
       return (
-        <div className="loadingholder">
-          <img src={loading} className="loading" alt="loading the labeling component..." />
+        <div className="loading-holder">
+          <div className="loading-div">
+            <img
+              src={loading}
+              className="loading"
+              alt="loading the labeling component..."
+            />
+          </div>
         </div>
       );
     }

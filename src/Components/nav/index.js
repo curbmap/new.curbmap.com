@@ -5,8 +5,10 @@ import styled from "styled-components";
 import AnimateHeight from "react-animate-height";
 import messages from "./messages.js";
 import background from "./curb.jpg";
+import {changeLabels} from "../../Actions/label.action.creators";
 import logo from "./logo.svg";
 import "./nav.css";
+import avatar from "./avatar.svg";
 
 const ImgBackground = styled.img`
   position: absolute;
@@ -47,6 +49,10 @@ class Nav extends Component {
     this.onMouseOver = this.onMouseOver.bind(this);
     this.onMouseOut = this.onMouseOut.bind(this);
     this.showMenu = this.showMenu.bind(this);
+    this.releaseLabels = this.releaseLabels.bind(this);
+  }
+  releaseLabels(evt) {
+    this.props.dispatch(changeLabels([]));
   }
   onMouseOver(evt) {
     evt.target.classList.add("hovering");
@@ -71,7 +77,7 @@ class Nav extends Component {
   getMenu() {
     if (this.props.logged_in) {
       return (
-        <div style={{ zIndex: 100, position: "relative", paddingTop: 10 }}>
+        <div style={{ position: "relative", zIndex: 1, paddingTop: 10, minWidth: "800px", width: "100vw" }}>
           <a href="https://curbmap.com">
             <img
               src={logo}
@@ -91,6 +97,7 @@ class Nav extends Component {
             className="inactive"
             onMouseOver={this.onMouseOver}
             onMouseOut={this.onMouseOut}
+            onClick={this.releaseLabels}
             activeStyle={styles.activeStyle}
           >
             Home
@@ -111,15 +118,35 @@ class Nav extends Component {
             className="inactive"
             onMouseOver={this.onMouseOver}
             onMouseOut={this.onMouseOut}
+            onClick={this.releaseLabels}
             activeStyle={styles.activeStyle}
           >
             News
           </NavLink>
+          <div class="user-bar">
+            <NavLink
+              exact
+              to="/user"
+              className="inactive"
+              onClick={this.releaseLabels}
+              activeStyle={styles.activeStyle}
+            >
+              <div className="user-info">
+                <span className="username">{this.props.username}</span>
+                <br />
+                <span className="email">{this.props.email}</span><br />
+                <span className="score">{this.props.score}</span> 
+              </div>
+              <div className="user-avatar">
+                <img src={this.composeAvatar(this.props.avatar)} width={45} height={45} />
+              </div>
+            </NavLink>
+          </div>
         </div>
       );
     } else {
       return (
-        <div style={{ position: "relative", zIndex: 1, paddingTop: 10 }}>
+        <div style={{ position: "relative", zIndex: 1, paddingTop: 10, minWidth: "800px", width: "100vw" }}>
           <a href="https://curbmap.com">
             <img
               src={logo}
@@ -233,12 +260,20 @@ class Nav extends Component {
       </AnimateHeight>
     );
   }
+  composeAvatar(components) {
+    // in future will actually get an array of values to construct the avatar in layers
+    return avatar;
+  }
 }
 const mapStateToProps = state => {
+  console.log("NAV PROPS: ", state);
   return {
     logged_in: state.auth.logged_in,
     signed_up: state.auth.signed_up,
-    session: state.auth.session
+    session: state.auth.session,
+    email: state.auth.email,
+    score: state.auth.score,
+    username: state.auth.username
   };
 };
 const mapDispatchToProps = dispatch => {

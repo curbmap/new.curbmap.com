@@ -1,0 +1,80 @@
+.labeling-image {
+  float: left;
+  align-content: center;
+  text-align: center;
+  padding: 0px;
+  margin: 0px;
+}
+
+.labels {
+  color: white;
+  border: 2px solid #4DB4D1;
+  border-radius: 10px;
+  padding-left: 5px;
+  margin-left: 20px;
+  padding-right: 5px;
+  width: 35vw;
+  min-width: 35vw;
+  height: 59vh;
+  float: left;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+.restrs{
+  color: white;
+  width: 35vw;
+  min-width: 35w;
+  height: 40vh;
+  float: left;
+  padding-left: 5px;
+  margin-left: 20px;
+}
+
+select {
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  user-select: none;
+  -webkit-padding-end: 25px;
+  -moz-padding-end: 25px;
+  -webkit-padding-start: 5px;
+  -moz-padding-start: 5px;
+  background-color: #707575;
+  background-position: center right;
+  background-repeat: no-repeat;
+  border: 1px solid #aaa;
+  border-radius: 5px;
+  box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.1);
+  color: #fff;
+  font-size: inherit;
+  margin: 0;
+  overflow: hidden;
+  padding-top: 3px;
+  padding-bottom: 3px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.button-ok {
+  position: absolute;
+  left: 20px;
+  bottom: 20px;
+  width: 150px;
+  height: 100px;
+  color: white;
+  font-size: 15pt;
+  background-color: green;
+  border-radius: 8px;
+}
+
+.button-cancel {
+  position: absolute;
+  right: 20px;
+  bottom: 20px;
+  width: 150px;
+  height: 100px;
+  color: white;
+  font-size: 15pt;
+  background-color: gray;
+  border-radius: 8px;
+}

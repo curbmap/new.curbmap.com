@@ -1,9 +1,17 @@
-.loadingholder {
+.loading-holder {
   width: 100vw;
   height: 60vh;
   align-content:center;
   text-align: center;
   vertical-align: middle;
+}
+.loading-div {
+  width: 130px;
+  height: 130px;
+  padding: 5px;
+  text-align: center;
+  margin-left: calc(50vw - 65px);
+  background-color: hotpink;
 }
 .loading {
   width: 120px;

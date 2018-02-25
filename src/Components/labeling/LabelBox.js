@@ -41,6 +41,12 @@ class LabelBox extends Component {
     return (
       <Group id={this.props.id} key={this.props.key}>
         <Rect
+          shadowEnabled={this.props.selected}
+          shadowOffsetX={1}
+          shadowOffsetY={1}
+          shadowOpacity={1}
+          shadowBlur={3}
+          shadowColor="#ffffff"
           x={this.props.x}
           y={this.props.y}
           width={this.props.width}
