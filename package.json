@@ -9,6 +9,7 @@
     "konva": "^1.7.6",
     "lodash": "^4.17.4",
     "react": "^16.2.0",
+    "react-accessible-accordion": "^2.0.0",
     "react-addons-css-transition-group": "^15.6.2",
     "react-animate-height": "^0.10.9",
     "react-dom": "^16.2.0",

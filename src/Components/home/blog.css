@@ -1,0 +1,547 @@
+.blog-space {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-content: flex-start;
+  align-items: flex-start;
+  margin: 20px;
+  padding: 10px;
+  font-family: Poppins-Regular;
+}
+
+.blog-container {
+  position: relative;
+  width: 100%;
+  background-color: white;
+  text-align: center;
+}
+
+.blog-image {
+  width: 10%;
+  vertical-align: center;
+}
+
+.blog-content {
+  font-size: 12pt;
+  font-family: Roboto-Regular;
+  font-weight: 300;
+  color: black;
+}
+
+
+.accordion-body {
+  background-color: gray;
+}
+
+.u-margin-top {
+  margin-top: 1.875rem;
+}
+
+.u-margin-right {
+  margin-right: 1.875rem;
+}
+
+.block {
+  padding: 1.25rem;
+  background: white;
+}
+
+.u-margin-bottom-s {
+  margin-bottom: 0.5rem;
+}
+
+.u-position-absolute {
+  position: absolute;
+}
+
+.u-position-relative {
+  position: relative;
+}
+
+.accordion {
+  border-radius: 2px;
+  width: 60vw;
+}
+
+.accordion__item + .accordion__item {
+  border-top: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.accordion__item--has-icon {
+  position: relative;
+}
+
+.accordion__title {
+  background-color: rgba(90, 160, 160, 0.6);
+  cursor: pointer;
+  padding: 18px;
+  width: calc(60vw-18px);
+  text-align: left;
+  border: none;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  align-content: center;
+  border-top-left-radius: 20px;
+  border-top-right-radius: 20px;
+}
+
+.accordion__title:hover {
+  background-color: rgba(60, 100, 150, 0.6);
+}
+
+.accordion__body {
+  padding: 18px;
+  width: calc(60vw-18px);
+  background-color: white;
+}
+
+.accordion__title > *:last-child,
+.accordion__body > *:last-child {
+  margin-bottom: 0;
+  width: 100%;
+}
+
+.accordion__arrow {
+  display: inline-block;
+  position: relative;
+  width: 24px;
+  height: 12px;
+  position: absolute;
+  top: 50%;
+  right: 0;
+  margin-top: -6px;
+}
+
+.accordion__arrow::after,
+.accordion__arrow::before {
+  display: block;
+  position: absolute;
+  top: 50%;
+  width: 10px;
+  height: 2px;
+  background-color: currentColor;
+  content: '';
+}
+
+.accordion__arrow::before {
+  left: 4px;
+  transform: rotate(45deg);
+}
+
+[aria-expanded='true'] .accordion__arrow::before {
+  transform: rotate(-45deg);
+}
+
+.accordion__arrow::after {
+  right: 4px;
+  transform: rotate(-45deg);
+}
+
+[aria-expanded='true'] .accordion__arrow::after {
+  transform: rotate(45deg);
+}
+
+.accordion__arrow::before,
+.accordion__arrow::after {
+  transition: transform 0.25s ease, -webkit-transform 0.25s ease;
+}
+
+/* -------------------------------------------------- */
+/* ---------------- Animation part ------------------ */
+/* -------------------------------------------------- */
+
+@keyframes move-down {
+  0% {
+      transform: translateY(0);
+  }
+  10% {
+      transform: translateY(0);
+  }
+  20% {
+      transform: translateY(12px);
+  }
+  30% {
+      transform: translateY(0);
+  }
+  100% {
+      transform: translateY(0);
+  }
+}
+
+@keyframes move-up {
+  0% {
+      transform: translateY(0);
+  }
+  10% {
+      transform: translateY(0);
+  }
+  20% {
+      transform: translateY(-12px);
+  }
+  30% {
+      transform: translateY(0);
+  }
+  100% {
+      transform: translateY(0);
+  }
+}
+
+.accordion__title--animated:hover .accordion__arrow {
+  animation-name: move-down;
+  animation-duration: 3s;
+}
+
+.accordion__title--animated[aria-expanded='true']:hover .accordion__arrow {
+  animation-name: move-up;
+  animation-duration: 3s;
+}
+
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  margin: 0 0 15px;
+}
+
+p,
+ul,
+ol,
+table,
+dl {
+  margin: 0 0 20px;
+}
+
+pre {
+  margin: 0;
+}
+
+h1,
+h2,
+h3 {
+  line-height: 1.1;
+}
+
+h1 {
+  font-size: 22px;
+}
+
+h2 {
+  color: #393939;
+}
+
+h3,
+h4,
+h5,
+h6 {
+  color: white;
+}
+
+a {
+  color: #39c;
+  text-decoration: none;
+}
+
+a:hover {
+  color: #069;
+}
+
+a small {
+  font-size: 11px;
+  color: #777;
+  margin-top: -0.3em;
+  display: block;
+}
+
+a:hover small {
+  color: #777;
+}
+
+.wrapper {
+  width: 860px;
+  margin: 0 auto;
+}
+
+
+
+strong {
+  color: #222;
+  font-weight: 700;
+}
+
+
+@media print, screen and (max-width: 960px) {
+  div.wrapper {
+      width: auto;
+      margin: 0;
+  }
+
+  header,
+  section,
+  footer {
+      float: none;
+      position: static;
+      width: auto;
+  }
+
+  header {
+      padding-right: 320px;
+  }
+
+  section {
+      border: 1px solid #e5e5e5;
+      border-width: 1px 0;
+      padding: 20px 0;
+      margin: 0 0 20px;
+  }
+
+  header a small {
+      display: inline;
+  }
+
+  header ul {
+      position: absolute;
+      right: 50px;
+      top: 52px;
+  }
+}
+
+@media print, screen and (max-width: 720px) {
+  body {
+      word-wrap: break-word;
+  }
+
+  header {
+      padding: 0;
+  }
+
+  header ul,
+  header p.view {
+      position: static;
+  }
+
+  pre,
+  code {
+      word-wrap: normal;
+  }
+}
+
+@media print, screen and (max-width: 480px) {
+  body {
+      padding: 15px;
+  }
+
+  header ul {
+      width: 99%;
+  }
+
+  header li,
+  header ul li + li + li {
+      width: 33%;
+  }
+}
+
+@media print {
+  body {
+      padding: 0.4in;
+      font-size: 12pt;
+      color: #444;
+  }
+}
+
+/*
+ Copyright 2014 GitHub Inc.
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
+     http://www.apache.org/licenses/LICENSE-2.0
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+*/
+
+.pl-c {
+  color: #969896;
+}
+
+.pl-c1      /* constant, markup.raw, meta.diff.header, meta.module-reference, meta.property-name, support, support.constant, support.variable, variable.other.constant */,
+.pl-s .pl-v {
+  color: #0086b3;
+}
+
+.pl-e  /* entity */,
+.pl-en {
+  color: #795da3;
+}
+
+.pl-s .pl-s1 /* string source */,
+.pl-smi {
+  color: #333;
+}
+
+.pl-ent {
+  color: #63a35c;
+}
+
+.pl-k {
+  color: #a71d5d;
+}
+
+.pl-pds              /* punctuation.definition.string, string.regexp.character-class */,
+.pl-s                /* string */,
+.pl-s .pl-pse .pl-s1 /* string punctuation.section.embedded source */,
+.pl-sr               /* string.regexp */,
+.pl-sr .pl-cce       /* string.regexp constant.character.escape */,
+.pl-sr .pl-sra       /* string.regexp string.regexp.arbitrary-repitition */,
+.pl-sr .pl-sre {
+  color: #183691;
+}
+
+.pl-v {
+  color: #ed6a43;
+}
+
+.pl-id {
+  color: #b52a1d;
+}
+
+.pl-ii {
+  background-color: #b52a1d;
+  color: #f8f8f8;
+}
+
+.pl-sr .pl-cce {
+  color: #63a35c;
+  font-weight: bold;
+}
+
+.pl-ml {
+  color: #693a17;
+}
+
+.pl-mh        /* markup.heading */,
+.pl-mh .pl-en /* markup.heading entity.name */,
+.pl-ms {
+  color: #1d3e81;
+  font-weight: bold;
+}
+
+.pl-mq {
+  color: #008080;
+}
+
+.pl-mi {
+  color: #333;
+  font-style: italic;
+}
+
+.pl-mb {
+  color: #333;
+  font-weight: bold;
+}
+
+.pl-md {
+  background-color: #ffecec;
+  color: #bd2c00;
+}
+
+.pl-mi1 {
+  background-color: #eaffea;
+  color: #55a532;
+}
+
+.pl-mdr {
+  color: #795da3;
+  font-weight: bold;
+}
+
+.pl-mo {
+  color: #1d3e81;
+}
+
+/*
+* Styles of the examples
+*/
+
+.example {
+  padding: 12.5px 0;
+}
+
+.u-border {
+  border: 3px solid blue;
+}
+
+.example {
+  padding: 0 25px;
+}
+
+.i {
+  width: 96px;
+  height: 96px;
+}
+.i--red {
+  fill: #cc0000;
+}
+
+.i {
+  width: 96px;
+  height: 96px;
+}
+.i--blue {
+  fill: #0000cc;
+}
+.i--white {
+  fill: #ffffff;
+  stroke: black;
+  stroke-width: 3;
+  opacity: 0.7;
+}
+.i--red {
+  fill: #cc0000;
+}
+.middle-icon {
+  margin-left: 10px;
+  margin-right: 10px;
+}
+
+.footer-menu {
+  padding: 25px 25px;
+}
+
+.btn {
+  display: inline-block;
+  text-align: center;
+  margin: 0;
+  cursor: pointer;
+  background-color: #fff;
+  color: #333;
+  padding: 0.5em;
+  line-height: 1;
+  border: solid #333 2px;
+  border-radius: 5px;
+  font-size: 16px;
+}
+
+.btn:hover {
+  color: #fff;
+  background-color: #333;
+}
+
+.btn .i {
+  width: 64px;
+  height: 64px;
+  fill: currentColor;
+}
+
+.anchor {
+  display: none;
+}
+
+h4:hover .anchor {
+  display: inline;
+}
