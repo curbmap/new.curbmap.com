@@ -10,6 +10,9 @@ import { changeLabels } from "../../Actions/label.action.creators";
 import Img from "./Img";
 import info from "./i.svg";
 import xinfo from "./x.svg";
+import chevrondn from "./chevrondn.svg";
+import chevronup from "./chevronup.svg";
+import empty from "./empty.svg";
 import "./labeling.css";
 
 function findBox(id, boxes) {
@@ -79,7 +82,9 @@ class LabelingContent extends Component {
       selectType: null,
       windowwidth: 0,
       windowheight: 0,
-      directions: null
+      directions: null,
+      scrollup: false,
+      scrolldown: false
     };
     this.handleMouseUp = this.handleMouseUp.bind(this);
     this.updateWindowDimensions = this.updateWindowDimensions.bind(this);
@@ -91,7 +96,10 @@ class LabelingContent extends Component {
     this.next = this.next.bind(this);
     this.deleteBox = this.deleteBox.bind(this);
     this.infoClicked = this.infoClicked.bind(this);
+    this.handleScroll = this.handleScroll.bind(this);
   }
+
+  labelsScroll = null;
 
   // Probably slows performance and may not be correct considering we are not using the real DOM
   componentDidMount() {
@@ -171,6 +179,30 @@ class LabelingContent extends Component {
       iddoubleclicked: id,
       showModal: true
     });
+  }
+  handleScroll(evt) {
+    let target = evt.nativeEvent.target;
+    let scroll = {
+      height: target.clientHeight,
+      totalHeight: target.scrollHeight,
+      topOffset: target.scrollTop
+    };
+    console.log(scroll);
+    let below = false;
+    let above = false;
+    if (scroll.totalHeight - scroll.topOffset > scroll.height) {
+      // more below
+      below = true;
+    }
+    if (scroll.totalHeight - scroll.topOffset === 0) {
+      // at bottom // no below
+      below = false;
+    }
+    if (scroll.topOffset > 0) {
+      // some above
+      above = true;
+    }
+    this.setState({ scrollup: above, scrolldown: below });
   }
 
   getImageSize(evt) {
@@ -545,7 +577,7 @@ class LabelingContent extends Component {
   }
 
   save(evt) {
-    this.props.save(this.state.boxes);
+    this.props.save({boxes: this.state.boxes, id: this.props.imageid});
   }
   next(evt) {
     this.props.next(this.props.imageid);
@@ -630,6 +662,10 @@ class LabelingContent extends Component {
     this.drawRects();
     this.updateCanvas();
     this.generateLabelButtons();
+    if (this.labelsScroll) {
+      console.log(this.labelsScroll);
+      this.handleScroll({ nativeEvent: { target: this.labelsScroll } });
+    }
   }
 
   cancel(evt) {
@@ -733,66 +769,89 @@ class LabelingContent extends Component {
           <h2>{this.getTitleForModal()}</h2>
           <p>{this.getContentForModal()}</p>
         </Modal>
-        <div
-          className="labeling-image"
-          style={{
-            width: window.innerWidth * 0.5,
-            height: window.innerHeight
-          }}
-        >
-          <div
-            style={{
-              width: window.innerWidth * 0.5,
-              height: window.innerHeight,
-              textAlign: "center",
-              paddingLeft: "20%",
-              margin: 0
-            }}
-            ref="stageholder"
-          >
+        <div className="labeling-content">
+          <div className="labeling-stage" ref="stageholder">
             {this.state.stage}
           </div>
-        </div>
-        <div>
-          <div
-            className={
-              this.state.directions ? "directions-expanded" : "directions"
-            }
-          >
-            <h4 className="directions-title">
-              {"Directions"}
-              <img
-                src={this.state.directions ? xinfo : info}
-                alt="information"
-                width={20}
-                height={20}
-                onClick={this.infoClicked}
-                className="info"
-              />
-            </h4>
-            <br />
-            {this.state.directions}
-          </div>
-          <div className="labels">
-            {
-              "Labels (scrolling... to select, hold down your mouse button over a label, it will being hovering):"
-            }
-            {this.state.labelButtons}
-          </div>
-          <div className="restrs">
-            <button className="next" onClick={this.next}>
-              Don't save, next
-            </button>
-            <button className="save" onClick={this.save}>
-              Submit and next
-            </button>
-            <button className="del" onClick={this.deleteBox}>
-              Delete box
-            </button>
-            <h4>{"Shortcut Keys:"}</h4>
-            n = next<br />
-            S = Save (note that it's capital)<br />
-            X = Remove a box (you first have to select one on the Labels list)
+          <div className="labeling-sidepanel">
+            <div
+              className={
+                this.state.directions ? "directions-expanded" : "directions"
+              }
+            >
+              <h4 className="directions-title">
+                {"Directions"}
+                <img
+                  src={this.state.directions ? xinfo : info}
+                  alt="information"
+                  width={20}
+                  height={20}
+                  onClick={this.infoClicked}
+                  className="info"
+                />
+              </h4>
+              <br />
+              {this.state.directions}
+            </div>
+            <div className="labels-holder">
+              {"Labels:"}
+              <div className="labels-signifier-top">
+                {this.state.scrollup && (
+                  <img
+                    src={chevronup}
+                    className="chevron"
+                    alt="more above"
+                    aria-hidden="true"
+                  />
+                )}
+                {!this.state.scrollup && (
+                  <img src={empty} className="chevron" />
+                )}
+              </div>
+
+              <div
+                className="labels"
+                onScroll={this.handleScroll}
+                ref={ref => {
+                  this.labelsScroll = ref;
+                }}
+              >
+                {this.state.labelButtons}
+              </div>
+              <div className="labels-signifier-bottom">
+                {this.state.scrolldown && (
+                  <img
+                    src={chevrondn}
+                    alt="more below"
+                    className="chevron"
+                    aria-hidden="true"
+                  />
+                )}
+                {!this.state.scrolldown && (
+                  <img src={empty} className="chevron" />
+                )}<br />{" "}&nbsp;{" "}<br />
+              </div>
+            </div>
+            <div className="restrs">
+              <div className="restrs-buttons">
+                <button className="next" onClick={this.next}>
+                  Don't save, next
+                </button>
+                <button className="save" onClick={this.save}>
+                  Submit and next
+                </button>
+                <button className="del" onClick={this.deleteBox}>
+                  Delete box
+                </button>
+              </div>
+              <div>
+                <h4>{"Shortcut Keys:"}</h4>
+                n = next<br />
+                S = Save (note that it's capital)<br />
+                X = Remove a box (you first have to select one on the Labels
+                list)
+              </div>
+            </div>
           </div>
         </div>
       </div>

@@ -9,7 +9,7 @@ export function updateImage(state = initialState, action) {
     case CHANGED_IMAGE:
       console.log("CHANGING IMG:"+action.imageStatus);
       return Object.assign({}, state, {
-        image: action.imageStatus.file,
+        image: action.imageStatus.image,
         imageid: action.imageStatus.id
       });
     default:

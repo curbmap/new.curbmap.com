@@ -1,10 +1,10 @@
 import React, { Component } from "react";
 import { withRouter } from "react-router-dom";
 import superagent from "superagent";
-import styled from "styled-components";
 import { connect } from "react-redux";
 import logo from "./logo.svg";
 import { loggedIn } from "../../Actions/auth.action.creators";
+import { withFormik } from "formik";
 import "./login.css";
 
 let HOST_AUTH = "https://curbmap.com";
@@ -12,79 +12,85 @@ if (process.env.REACT_APP_STAGE === "dev") {
   HOST_AUTH = "http://localhost:8080";
 }
 
-const ImgLogo = styled.img`
-  width: 25%;
-`;
-const DivLogin = styled.div`
-  width: 40%;
-  margin: 20px;
-  padding: 10px;
-  text-align: center;
-  background-color: white;
-  border-radius: 5px;
-  box-shadow: 1px 1px 8px 5px #4db4d1;
-  min-width: 500px;
-`;
+// component function
+const LoginForm = ({
+  values,
+  errors,
+  touched,
+  handleChange,
+  handleBlur,
+  handleSubmit,
+  isSubmitting
+}) => (
+  <form onSubmit={handleSubmit}>
+    <input
+      type="email"
+      name="email"
+      placeholder="email address"
+      onChange={handleChange}
+      onBlur={handleBlur}
+      value={values.email}
+    />
+    {touched.email &&
+      errors.email && <div className="error-label">{errors.email}</div>}
+    <input
+      type="password"
+      name="password"
+      placeholder="password"
+      onChange={handleChange}
+      onBlur={handleBlur}
+      value={values.password}
+    />
+    {touched.password &&
+      errors.password && <div className="error-label">{errors.password}</div>}
+    <button type="submit" disabled={isSubmitting}>
+      Login
+    </button>
+  </form>
+);
 
-const Button = styled.button`
-  padding-top: 10px;
-  padding-bottom: 10px;
-  padding-left: 20px;
-  padding-right: 20px;
-  border-radius: 10px;
-  font-family: Poppins-Regular;
-  font-weight: bold;
-  font-size: 14pt;
-`;
-const styles = {
-  body: {
-    padding: 20
+const FormikLoginForm = withFormik({
+  // Transform outer props into form values
+  mapPropsToValues: props => ({ email: "", password: "" }),
+  // Add a custom validation function (this can be async too!)
+  validate: (values, props) => {
+    const errors = {};
+    if (!values.email) {
+      errors.email = "Required";
+    } else if (
+      !/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(values.email)
+    ) {
+      errors.email = "Invalid email address";
+    }
+    if (!values.password) {
+      errors.password = "Required";
+    } else if (values.password.length < 9 || values.password.length > 60) {
+      errors.password = "Password is between 9 and 60 characters";
+    }
+    return errors;
+  },
+  handleSubmit: (values, props) => {
+    console.log(values);
+    console.log(props);
+    props.props.handleSubmit(values);
   }
-};
-const checkpassword = function(passValue) {
-  if (passValue.length < 9 || passValue.length > 30) {
-    return false;
-  }
-  return true;
-};
+})(LoginForm);
+
 class Login extends Component {
   constructor(props) {
     super(props);
-    this.changePassword = this.changePassword.bind(this);
-    this.changeUsername = this.changeUsername.bind(this);
     this.formHandler = this.formHandler.bind(this);
     this.state = {
       username: "",
-      password: "",
-      usernameClass: "correct",
-      passwordClass: "correct",
-      altPassword: "password is looking good!"
+      password: ""
     };
-  }
-  changeUsername(evt) {
-    this.setState({ username: evt.target.value });
-  }
-
-  changePassword(evt) {
-    this.refs.password.classList.remove("incorrect");
-    this.refs.password.classList.add("correct");
-    this.setState({
-      altPassword: "Your password is looking correct.",
-      password: evt.target.value
-    });
-    if (!checkpassword(evt.target.value)) {
-      this.setState({
-        altPassword: "The password you entered so far is probably not correct."
-      });
-      this.refs.password.classList.remove("correct");
-      this.refs.password.classList.add("incorrect");
-    }
   }
 
   formHandler(evt) {
+    console.log(evt);
     superagent
       .post(HOST_AUTH + "/login")
-      .send({ username: this.state.username, password: this.state.password })
+      .send({ username: evt.email, password: evt.password })
       .set("Content-Type", "application/x-www-form-urlencoded")
       .end((err, res) => {
         if (err) {
@@ -99,38 +105,17 @@ class Login extends Component {
         }
         alert("There was an error signing in, check your password.");
       });
-    evt.preventDefault();
   }
   render() {
     return (
-      <div style={styles.body}>
-        <DivLogin>
-          <ImgLogo src={logo} />
+      <div className="login-holder">
+        <div className="login">
+          <img src={logo} alt="logo for curbmap" className="login-logo" />
           <br />
-          <form onSubmit={this.formHandler}>
-            <input
-              placeholder="username"
-              value={this.state.username}
-              onChange={this.changeUsername}
-              className={this.state.usernameClass}
-              ref="username"
-            />
-            <br />
-            <input
-              type="password"
-              placeholder="password"
-              value={this.state.password}
-              onChange={this.changePassword}
-              className={this.state.passwordClass}
-              alt={this.state.altPassword}
-              ref="password"
-            />
-            <br />
-            <Button type="submit" value="Submit" id="submit">
-              Login
-            </Button>
-          </form>
-        </DivLogin>
+          <h2 className="login-header">Welcome,</h2>
+          <h4 className="login-header">and log in to curbmap.</h4>
+          <FormikLoginForm handleSubmit={this.formHandler} />
+        </div>
       </div>
     );
   }

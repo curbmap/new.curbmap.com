@@ -123,7 +123,7 @@ class Nav extends Component {
           >
             News
           </NavLink>
-          <div class="user-bar">
+          <div className="user-bar">
             <NavLink
               exact
               to="/user"
@@ -218,11 +218,14 @@ class Nav extends Component {
         <div
           style={{
             zIndex: 10,
-            position: "relative",
-            width: "100%",
+            display: "flex",
+            width: "100vw",
             height: 200,
+            flexDirection: "column",
+            flexAlign: "center",
+            alignContent: "center",
+            alignItems: "center",
             textAlign: "center",
-            paddingLeft: "20%"
           }}
         >
           <div

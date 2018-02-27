@@ -24,7 +24,22 @@ class Labeling extends Component {
   }
 
   save(state) {
+    superagent
+    .post(HOST_RES+ "/postRects/")
+    .set("Accept", "application/json")
+    .set("Content-Type", "application/json")
+    .set("Access-Control-Allow-Origin", "*")
+    .set("session", this.props.session)
+    .set("username", this.props.username)
+    .send(state)
+    .then(this.sentRects)
+    .catch(err=>{ 
+      console.log("ERR SENDING RECTS", err);
+    });
     console.log(state);
+  }
+  sentRects(res) {
+    console.log(res);
   }
   previous() {}
   next() {}
@@ -50,12 +65,7 @@ class Labeling extends Component {
     if (this.counter === 0) {
       console.log("GOT IMAGE");
       this.counter = this.counter + 1;
-      this.dispatchOnCounter(res.body);
-    }
-  }
-  dispatchOnCounter(body) {
-    if (this.counter === 1) {
-      this.props.dispatch(updateImage(body));
+      this.props.dispatch(updateImage(res.body));
     }
   }
   render() {

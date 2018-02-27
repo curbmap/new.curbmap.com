@@ -7,29 +7,26 @@ import {
 import { connect } from "react-redux";
 import labels from "./Labels";
 import { changeLabels } from "../../Actions/label.action.creators";
+import "./sortable.css";
+
 const SortableItem = SortableElement(({ value }) => (
   <div
+    className="sortable"
     style={{
-      padding: 5,
-      width: "80%",
-      margin: 5,
-      backgroundColor: labels[value].color
+      backgroundColor: labels[value].color,
+      color:
+        labels[value].color !== "rgba(255, 255, 255, 1.0)" ? "white" : "black"
     }}
   >
-    {value}
+    {labels[value].value}
   </div>
 ));
 const SelectedItem = SortableElement(({ value }) => (
   <div
-    style={{
-      padding: 5,
-      width: "80%",
-      margin: 5,
-      backgroundColor: "black",
-      color: "white"
-    }}
+    style={{ backgroundColor: "black", color: "lightgray" }}
+    className="sortable"
   >
-    {value}
+    {labels[value].value}
   </div>
 ));
 
