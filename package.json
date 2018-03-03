@@ -2,6 +2,7 @@
   "name": "new.curbmap.com",
   "version": "0.1.0",
   "private": true,
+  "homepage": "/home",
   "dependencies": {
     "@types/react-sidebar": "^2.2.2",
     "eslint-config-airbnb": "^16.1.0",

@@ -8,9 +8,9 @@ import { withFormik } from "formik";
 import "./signup.css";
 
 let HOST_AUTH = "https://curbmap.com";
-if (process.env.REACT_APP_STAGE === "dev") {
-  HOST_AUTH = "http://localhost:8080";
-}
+// if (process.env.REACT_APP_STAGE === "dev") {
+//   HOST_AUTH = "http://localhost:8080";
+// }
 
 // component function
 const SignupForm = ({

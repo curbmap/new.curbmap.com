@@ -8,9 +8,9 @@ import { withFormik } from "formik";
 import "./login.css";
 
 let HOST_AUTH = "https://curbmap.com";
-if (process.env.REACT_APP_STAGE === "dev") {
-  HOST_AUTH = "http://localhost:8080";
-}
+// if (process.env.REACT_APP_STAGE === "dev") {
+//   HOST_AUTH = "http://localhost:8080";
+// }
 
 // component function
 const LoginForm = ({
@@ -70,8 +70,6 @@ const FormikLoginForm = withFormik({
     return errors;
   },
   handleSubmit: (values, props) => {
-    console.log(values);
-    console.log(props);
     props.props.handleSubmit(values);
   }
 })(LoginForm);
@@ -87,7 +85,6 @@ class Login extends Component {
   }
 
   formHandler(evt) {
-    console.log(evt);
     superagent
       .post(HOST_AUTH + "/login")
       .send({ username: evt.email, password: evt.password })

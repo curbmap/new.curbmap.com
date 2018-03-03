@@ -8,9 +8,9 @@ import loading from "./loading.svg";
 import "./loading.css";
 
 let HOST_RES = "https://curbmap.com:50003";
-if (process.env.REACT_APP_STAGE === "dev") {
-  HOST_RES = "http://localhost:8081";
-}
+// if (process.env.REACT_APP_STAGE === "dev") {
+//   HOST_RES = "http://localhost:8081";
+// }
 console.log("HOST_RES", HOST_RES);
 class Labeling extends Component {
   constructor(props) {
