@@ -5,33 +5,24 @@ import {
   AccordionItemTitle,
   AccordionItemBody
 } from "react-accessible-accordion";
+import clap from "./clap.svg";
+import frown from "./frown.svg";
 import "../../../node_modules/react-accessible-accordion/dist/react-accessible-accordion.css";
 
 import blogs from "./blogs";
 import "./blog.css";
-/*
-<h3 className=" u-position-relative u-margin-bottom-s">
-                        Run the demo
-                        <div className="accordion__arrow" role="presentation" />
-                    </h3>
-                    <div>To have an easy play around</div>
-                </AccordionItemTitle>
-                <div className="block">
-                    This block fits in between the title and the body.
-                </div>
-                <AccordionItemBody>
-                    <p>
-                        Everything mentioned in the installation process should
-                        already be done.
-                    </p>
-                    <p>
-                        # Make sure you use the right node version.<br />
-                        nvm use<br />
-                        # Start the server and the development tools.<br />
-                        npm run start-demo
-                    </p>
-                </AccordionItemBody>
-*/
+
+const getLocalDateFor = function(date) {
+  let realDate = new Date(0);
+  realDate.setUTCSeconds(date);
+  var options = {
+    weekday: "long",
+    year: "numeric",
+    month: "long",
+    day: "numeric"
+  };
+  return `${realDate.toLocaleDateString("en-US", options)}`;
+};
 const makePosts = function(blogs) {
   let bloglist = [];
   for (let blogpost of blogs) {
@@ -46,11 +37,20 @@ const makePosts = function(blogs) {
               className="blog-image"
             />{" "}
             {blogpost.title}
+            <div className="accordion__date" role="presentation">
+              {getLocalDateFor(blogpost.date)}
+            </div>
             <div className="accordion__arrow" role="presentation" />
           </h3>
         </AccordionItemTitle>
-        <div className="block">{blogpost.introparagraph+"..."}</div>
+        <div className="block font-medium">
+          {blogpost.introparagraph + "..."}
+        </div>
         <AccordionItemBody>{blogpost.content}</AccordionItemBody>
+        <div className="block font-medium">
+          <div className="u-left"><img src={clap} width={30} /></div>&nbsp;
+          <div className="u-right"><img src={frown} width={30} /></div>
+        </div>
       </AccordionItem>
     );
     bloglist.push(blog_item);

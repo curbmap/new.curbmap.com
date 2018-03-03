@@ -4,19 +4,21 @@
 }
 .login-holder {
   width: 100%;
-  height: 80vh;
+  min-height: 60vh;
   display: flex;
-  flex-direction: column;
+  flex-direction: column;  
   align-content: center;
   align-items: center;
+  overflow-y: auto;
 }
 .login-header {
   color: white;
   margin: 8px;
 }
 .login {
-  background-color: rgba(100, 160, 160, 0.65);
+  position: relative;
   border-radius: 10px;
+  background-color: hsla(218, 50%, 20%, 1.0);
   width: 40vw;
   text-align: center;
 }

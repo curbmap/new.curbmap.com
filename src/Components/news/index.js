@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import "./news.css";
 const styles = {
   body: {
     padding: 20,
@@ -8,7 +9,7 @@ const styles = {
 class News extends Component {
   render() {
     return (
-      <div style={styles.body}>
+      <div className="news-holder">
         <h4>{"Home / News"}</h4>
       </div>
     );

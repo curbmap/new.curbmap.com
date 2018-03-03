@@ -577,7 +577,7 @@ class LabelingContent extends Component {
   }
 
   save(evt) {
-    this.props.save({boxes: this.state.boxes, id: this.props.imageid});
+    this.props.save({boxes: this.state.boxes, id: this.props.imageid}, this.props.session, this.props.username);
   }
   next(evt) {
     this.props.next(this.props.imageid);
@@ -861,6 +861,8 @@ class LabelingContent extends Component {
 const mapStateToProps = state => {
   let newProps = {};
   newProps.labels = state.updateLabels.labels;
+  newProps.session = state.auth.session;
+  newProps.username = state.auth.username;
   return newProps;
 };
 const mapDispatchToProps = dispatch => {

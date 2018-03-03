@@ -15,7 +15,7 @@ const SortableItem = SortableElement(({ value }) => (
     style={{
       backgroundColor: labels[value].color,
       color:
-        labels[value].color !== "rgba(255, 255, 255, 1.0)" ? "white" : "black"
+        labels[value].color !== "rgba(255, 255, 255, 1.0)" &&  labels[value].color !== "rgba(255, 255, 0, 1.0)" ? "white" : "black"
     }}
   >
     {labels[value].value}

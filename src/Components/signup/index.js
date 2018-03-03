@@ -187,12 +187,12 @@ class Signup extends Component {
   }
   render() {
     return (
-      <div className="login-holder">
-        <div className="login">
-          <img src={logo} alt="logo for curbmap" className="login-logo" />
+      <div className="signup-holder">
+        <div className="signup">
+          <img src={logo} alt="logo for curbmap" className="signup-logo" />
           <br />
-          <h2 className="login-header">Welcome,</h2>
-          <h4 className="login-header">and sign up for curbmap.</h4>
+          <h2 className="signup-header">Welcome,</h2>
+          <h4 className="signup-header">and sign up for curbmap.</h4>
           <FormikSignupForm handleSubmit={this.formHandler} />
         </div>
       </div>

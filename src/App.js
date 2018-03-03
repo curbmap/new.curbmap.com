@@ -8,6 +8,8 @@ import Login from "./Components/login";
 import Signup from "./Components/signup";
 import Home from "./Components/home";
 import News from "./Components/news";
+import Footer from "./Components/footer";
+import User from "./Components/user";
 
 class App extends Component {
   constructor(props) {
@@ -45,7 +47,9 @@ class App extends Component {
             />
             {/* labeling task routes */}
             {this.props.labeling}
+            {this.props.user}
           </Switch>
+          <Footer />
         </div>
       </BrowserRouter>
     );
@@ -53,6 +57,7 @@ class App extends Component {
 }
 const mapStateToProps = state => {
   let labeling = null;
+  let user = null;
   if (state.auth.logged_in) {
     labeling = (
       <Route
@@ -61,6 +66,9 @@ const mapStateToProps = state => {
         render={props => <Labeling props={state} />}
       />
     );
+    user = (
+      <Route exact path="/user" render={props => <User props={state} />} />
+    );
   }
   return {
     logged_in: state.auth.logged_in,
@@ -68,11 +76,12 @@ const mapStateToProps = state => {
     username: state.auth.username,
     email: state.auth.email,
     session: state.auth.session,
-    labeling: labeling
+    labeling: labeling,
+    user: user
   };
 };
 const mapDispatchToProps = dispatch => {
-  return {dispatch};
+  return { dispatch };
 };
 
 App = connect(mapStateToProps, mapDispatchToProps)(App);

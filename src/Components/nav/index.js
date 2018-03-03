@@ -1,11 +1,11 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import { NavLink, withRouter } from "react-router-dom";
+import { Link, withRouter } from "react-router-dom";
 import styled from "styled-components";
 import AnimateHeight from "react-animate-height";
 import messages from "./messages.js";
 import background from "./curb.jpg";
-import {changeLabels} from "../../Actions/label.action.creators";
+import { changeLabels } from "../../Actions/label.action.creators";
 import logo from "./logo.svg";
 import "./nav.css";
 import avatar from "./avatar.svg";
@@ -28,11 +28,10 @@ const styles = {
   },
   activeStyle: {
     padding: "10px",
-    backgroundColor: "rgba(0,0,100, 1)",
+    backgroundColor: "hsla(218, 50%, 20%, 1.0)",
     color: "white",
     textDecoration: "none",
-    marginLeft: "5px",
-    borderRadius: "10px"
+    marginLeft: "5px"
   }
 };
 
@@ -55,10 +54,10 @@ class Nav extends Component {
     this.props.dispatch(changeLabels([]));
   }
   onMouseOver(evt) {
-    evt.target.classList.add("hovering");
+    evt.target.classList.replace("inactive", "hovering");
   }
   onMouseOut(evt) {
-    evt.target.classList.remove("hovering");
+    evt.target.classList.replace("hovering", "inactive");
   }
   onMouseEnter(evt) {
     console.log(this.props);
@@ -77,7 +76,15 @@ class Nav extends Component {
   getMenu() {
     if (this.props.logged_in) {
       return (
-        <div style={{ position: "relative", zIndex: 1, paddingTop: 10, minWidth: "800px", width: "100vw" }}>
+        <div
+          style={{
+            position: "relative",
+            zIndex: 1,
+            paddingTop: 10,
+            minWidth: "800px",
+            width: "100vw"
+          }}
+        >
           <a href="https://curbmap.com">
             <img
               src={logo}
@@ -91,62 +98,77 @@ class Nav extends Component {
               alt="The curbmap logo"
             />
           </a>
-          <NavLink
+          <Link
             exact
             to="/"
-            className="inactive"
+            className={this.props.location.pathname === "/" ? "active" : "inactive"}
             onMouseOver={this.onMouseOver}
             onMouseOut={this.onMouseOut}
             onClick={this.releaseLabels}
-            activeStyle={styles.activeStyle}
           >
-            Home
-          </NavLink>
-          <NavLink
+            Participation Hub
+          </Link>{" | "}
+          <Link
             exact
             to="/labeling"
-            className="inactive"
+            className={
+              this.props.location.pathname === "/labeling" ? "active" : "inactive"
+            }
             onMouseOver={this.onMouseOver}
             onMouseOut={this.onMouseOut}
-            activeStyle={styles.activeStyle}
           >
             Label
-          </NavLink>
-          <NavLink
+          </Link>{" | "}
+          <Link
             exact
             to="/news"
-            className="inactive"
+            className={
+              this.props.location.pathname === "/news" ? "active" : "inactive"
+            }
             onMouseOver={this.onMouseOver}
             onMouseOut={this.onMouseOut}
             onClick={this.releaseLabels}
-            activeStyle={styles.activeStyle}
           >
             News
-          </NavLink>
+          </Link>
           <div className="user-bar">
-            <NavLink
+            <Link
               exact
               to="/user"
-              className="inactive"
+              className={
+                this.props.location.pathname === "/user" ? "active" : "inactive"
+              }
               onClick={this.releaseLabels}
-              activeStyle={styles.activeStyle}
             >
               <div className="user-info">
                 <span className="username">{this.props.username}</span>
                 <br />
-                <span className="email">{this.props.email}</span><br />
-                <span className="score">{this.props.score}</span> 
+                <span className="email">{this.props.email}</span>
+                <br />
+                <span className="score">{this.props.score}</span>
               </div>
               <div className="user-avatar">
-                <img src={this.composeAvatar(this.props.avatar)} width={45} height={45} />
+                <img
+                  src={this.composeAvatar(this.props.avatar)}
+                  width={45}
+                  height={45}
+                />
               </div>
-            </NavLink>
+            </Link>
           </div>
         </div>
       );
     } else {
       return (
-        <div style={{ position: "relative", zIndex: 1, paddingTop: 10, minWidth: "800px", width: "100vw" }}>
+        <div
+          style={{
+            position: "relative",
+            zIndex: 1,
+            paddingTop: 10,
+            minWidth: "800px",
+            width: "100vw"
+          }}
+        >
           <a href="https://curbmap.com">
             <img
               src={logo}
@@ -159,48 +181,54 @@ class Nav extends Component {
               alt="the curbmap logo."
             />
           </a>
-          <NavLink
+          <Link
             exact
             to="/"
-            className="inactive"
+            className={
+              this.props.location.pathname === "/" ? "active" : "inactive"
+            }
             onMouseOver={this.onMouseOver}
             onMouseOut={this.onMouseOut}
-            activeStyle={styles.activeStyle}
           >
-            Home
-          </NavLink>
-          <NavLink
+            Participation Hub
+          </Link>{" | "}
+          <Link
             exact
             to="/login"
-            className="inactive"
+            className={
+              this.props.location.pathname === "/login" ? "active" : "inactive"
+            }
             onMouseOver={this.onMouseOver}
             onMouseOut={this.onMouseOut}
-            activeStyle={styles.activeStyle}
           >
             Login
-          </NavLink>
-          <NavLink
+          </Link>{" | "}
+          <Link
             exact
             to="/signup"
-            className="inactive"
+            className={
+              this.props.location.pathname === "/signup" ? "active" : "inactive"
+            }
             onMouseOver={this.onMouseOver}
             onMouseOut={this.onMouseOut}
             activeStyle={styles.activeStyle}
           >
             Signup
-          </NavLink>
-          <NavLink
+          </Link>{" | "}
+          <Link
             exact
             to="/news"
-            className="inactive"
+            className={
+              this.props.location.pathname === "/news" ? "active" : "inactive"
+            }
             onMouseOver={this.onMouseOver}
             onMouseOut={this.onMouseOut}
-            activeStyle={styles.activeStyle}
           >
             News
-          </NavLink>
+          </Link>
         </div>
       );
+      console.log(window.location);
     }
   }
   chooseRandomMessage() {
@@ -225,7 +253,7 @@ class Nav extends Component {
             flexAlign: "center",
             alignContent: "center",
             alignItems: "center",
-            textAlign: "center",
+            textAlign: "center"
           }}
         >
           <div

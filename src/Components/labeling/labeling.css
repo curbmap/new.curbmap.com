@@ -15,7 +15,7 @@
 .directions {
   color: white;
   font-weight: 200;
-  border: 2px solid rgba(77, 180, 209, 0.577);
+  border: 2px solid hsla(218, 50%, 20%, 1.0);
   border-radius: 10px;
   padding: 10px;
   margin-left: 20px;
@@ -25,7 +25,7 @@
 .directions-expanded {
   color: white;
   font-weight: 200;
-  border: 2px solid rgba(77, 180, 209, 0.577);
+  border: 2px solid hsla(218, 50%, 20%, 1.0);
   border-radius: 10px;
   padding: 10px;
   padding-right: 25px;
@@ -52,7 +52,7 @@
   font-weight: 400;
   font-family: Poppins-Regular;
   min-width: 35vw;
-  border: 2px solid rgba(77, 180, 209, 0.577);
+  border: 2px solid hsla(218, 50%, 20%, 1.0);
   border-radius: 10px;
   margin-left: 20px;
   margin-right: 20px;

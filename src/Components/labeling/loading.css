@@ -11,7 +11,8 @@
   padding: 5px;
   text-align: center;
   margin-left: calc(50vw - 65px);
-  background-color: hotpink;
+  background-color: white;
+  border-radius: 10px;
 }
 .loading {
   width: 120px;

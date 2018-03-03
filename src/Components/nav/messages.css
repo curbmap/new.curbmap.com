@@ -27,8 +27,8 @@
   width:10%;
   transform: rotate(-10deg) scale(0.8);
   border-radius: 20px;
-  border: 10px solid rgba(77, 180, 209,0.5);
+  border: 10px solid hsla(218, 50%, 20%, 1.0);
   padding-left: 10px;
   padding-right: 10px;
-  background-color:rgba(77, 180, 209,0.6);
+  background-color:hsla(218, 50%, 20%, 1.0);
 }

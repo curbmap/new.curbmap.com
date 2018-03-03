@@ -6,9 +6,12 @@
   align-items: flex-start;
   margin: 20px;
   padding: 10px;
+  min-height: 55vh;
   font-family: Poppins-Regular;
 }
-
+.font-medium {
+  font-size: 11pt;
+}
 .blog-container {
   position: relative;
   width: 100%;
@@ -72,7 +75,7 @@
 }
 
 .accordion__title {
-  background-color: rgba(90, 160, 160, 0.6);
+  background-color: hsla(218, 50%, 20%, 1.0);
   cursor: pointer;
   padding: 18px;
   width: calc(60vw-18px);
@@ -87,19 +90,36 @@
 }
 
 .accordion__title:hover {
-  background-color: rgba(60, 100, 150, 0.6);
+  background-color: hsla(218, 50%, 30%, 1.0);
 }
 
 .accordion__body {
   padding: 18px;
   width: calc(60vw-18px);
   background-color: white;
+  font-size: 11pt;
 }
 
+.accordion__item > *:last-child {
+  border-bottom-left-radius: 10px;
+  border-bottom-right-radius: 10px;
+}
 .accordion__title > *:last-child,
 .accordion__body > *:last-child {
   margin-bottom: 0;
   width: 100%;
+}
+
+.accordion__date {
+  color: lightgreen;
+  font-size: 10pt;
+  position: absolute;
+  top: 0;
+  right: 0;
+}
+
+p h4 {
+  color: red;
 }
 
 .accordion__arrow {
@@ -207,6 +227,11 @@ h6 {
   margin: 0 0 15px;
 }
 
+h4.hblue {
+  color: hsla(220, 90%, 70%, 1.0);
+  font-weight: bolder;
+}
+
 p,
 ul,
 ol,
@@ -238,26 +263,6 @@ h4,
 h5,
 h6 {
   color: white;
-}
-
-a {
-  color: #39c;
-  text-decoration: none;
-}
-
-a:hover {
-  color: #069;
-}
-
-a small {
-  font-size: 11px;
-  color: #777;
-  margin-top: -0.3em;
-  display: block;
-}
-
-a:hover small {
-  color: #777;
 }
 
 .wrapper {
@@ -323,10 +328,7 @@ strong {
       position: static;
   }
 
-  pre,
-  code {
-      word-wrap: normal;
-  }
+ 
 }
 
 @media print, screen and (max-width: 480px) {
@@ -476,6 +478,13 @@ strong {
   border: 3px solid blue;
 }
 
+.u-left {
+  float: left;
+}
+
+.u-right {
+  float: right;
+}
 .example {
   padding: 0 25px;
 }
@@ -501,9 +510,7 @@ strong {
   stroke-width: 3;
   opacity: 0.7;
 }
-.i--red {
-  fill: #cc0000;
-}
+
 .middle-icon {
   margin-left: 10px;
   margin-right: 10px;
