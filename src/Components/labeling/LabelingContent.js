@@ -286,40 +286,42 @@ class LabelingContent extends Component {
     reveresed.forEach((label, i, arr) => {
       let idx = findBox(label.id, this.state.boxes);
       let box = this.state.boxes[idx];
-      if (label.selected) {
-        lastValue = (
-          <LabelBox
-            selected={true}
-            x={box.x * this.state.imagewidth}
-            y={box.y * this.state.imageheight}
-            type={box.type}
-            width={box.width * this.state.imagewidth}
-            height={box.height * this.state.imageheight}
-            movingRect={this.movingRect.bind(this)}
-            stoppedMovingRect={this.stoppedMovingRect.bind(this)}
-            doubleClick={this.handleDoubleClickFromRect.bind(this)}
-            zIndex={200}
-            id={box.id}
-            key={`box${box.id}`}
-          />
-        );
-      } else {
-        values.push(
-          <LabelBox
-            selected={false}
-            x={box.x * this.state.imagewidth}
-            y={box.y * this.state.imageheight}
-            type={box.type}
-            width={box.width * this.state.imagewidth}
-            height={box.height * this.state.imageheight}
-            movingRect={this.movingRect.bind(this)}
-            stoppedMovingRect={this.stoppedMovingRect.bind(this)}
-            doubleClick={this.handleDoubleClickFromRect.bind(this)}
-            zIndex={90 + i}
-            id={box.id}
-            key={`box${box.id}`}
-          />
-        );
+      if (box !== undefined) {
+        if (label.selected) {
+          lastValue = (
+            <LabelBox
+              selected={true}
+              x={box.x * this.state.imagewidth}
+              y={box.y * this.state.imageheight}
+              type={box.type}
+              width={box.width * this.state.imagewidth}
+              height={box.height * this.state.imageheight}
+              movingRect={this.movingRect.bind(this)}
+              stoppedMovingRect={this.stoppedMovingRect.bind(this)}
+              doubleClick={this.handleDoubleClickFromRect.bind(this)}
+              zIndex={200}
+              id={box.id}
+              key={`box${box.id}`}
+            />
+          );
+        } else {
+          values.push(
+            <LabelBox
+              selected={false}
+              x={box.x * this.state.imagewidth}
+              y={box.y * this.state.imageheight}
+              type={box.type}
+              width={box.width * this.state.imagewidth}
+              height={box.height * this.state.imageheight}
+              movingRect={this.movingRect.bind(this)}
+              stoppedMovingRect={this.stoppedMovingRect.bind(this)}
+              doubleClick={this.handleDoubleClickFromRect.bind(this)}
+              zIndex={90 + i}
+              id={box.id}
+              key={`box${box.id}`}
+            />
+          );
+        }
       }
     });
     if (lastValue) {
@@ -577,7 +579,11 @@ class LabelingContent extends Component {
   }
 
   save(evt) {
-    this.props.save({boxes: this.state.boxes, id: this.props.imageid}, this.props.session, this.props.username);
+    this.props.save(
+      { boxes: this.state.boxes, id: this.props.imageid },
+      this.props.session,
+      this.props.username
+    );
   }
   next(evt) {
     this.props.next(this.props.imageid);
@@ -829,7 +835,8 @@ class LabelingContent extends Component {
                 )}
                 {!this.state.scrolldown && (
                   <img src={empty} className="chevron" />
-                )}<br />{" "}&nbsp;{" "}<br />
+                )}
+                <br /> &nbsp; <br />
               </div>
             </div>
             <div className="restrs">
