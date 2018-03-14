@@ -7,7 +7,7 @@ import {
 } from "react-accessible-accordion";
 import clap from "./clap.svg";
 import frown from "./frown.svg";
-import "../../../node_modules/react-accessible-accordion/dist/react-accessible-accordion.css";
+//import "../../../node_modules/react-accessible-accordion/dist/react-accessible-accordion.css";
 
 import blogs from "./blogs";
 import "./blog.css";
@@ -26,6 +26,7 @@ const getLocalDateFor = function(date) {
 const makePosts = function(blogs) {
   let bloglist = [];
   for (let blogpost of blogs) {
+
     console.log(blogpost);
     let blog_item = (
       <AccordionItem>

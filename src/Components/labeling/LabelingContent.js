@@ -1,3 +1,4 @@
+//set state warning is here canvas does not render in time for the life cycle hook
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
