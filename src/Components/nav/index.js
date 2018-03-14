@@ -208,7 +208,7 @@ class Nav extends Component {
             }
             onMouseOver={this.onMouseOver}
             onMouseOut={this.onMouseOut}
-            activeStyle={styles.activeStyle}
+            // activeStyle={styles.activeStyle}
           >
             Signup
           </Link>{" | "}
