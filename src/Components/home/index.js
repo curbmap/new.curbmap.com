@@ -27,7 +27,7 @@ const makePosts = function(blogs) {
   let bloglist = [];
   for (let blogpost of blogs) {
 
-    console.log(blogpost);
+    console.log("blogpost", blogpost);
     let blog_item = (
       <AccordionItem>
         <AccordionItemTitle className="accordion__title accordion__title--animated">
