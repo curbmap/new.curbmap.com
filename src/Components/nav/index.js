@@ -182,7 +182,6 @@ class Nav extends Component {
             />
           </a>
           <Link
-            exact
             to="/"
             className={
               this.props.location.pathname === "/" ? "active" : "inactive"
@@ -193,7 +192,6 @@ class Nav extends Component {
             Participation Hub
           </Link>{" | "}
           <Link
-            exact
             to="/login"
             className={
               this.props.location.pathname === "/login" ? "active" : "inactive"
@@ -204,19 +202,17 @@ class Nav extends Component {
             Login
           </Link>{" | "}
           <Link
-            exact
             to="/signup"
             className={
               this.props.location.pathname === "/signup" ? "active" : "inactive"
             }
             onMouseOver={this.onMouseOver}
             onMouseOut={this.onMouseOut}
-            activeStyle={styles.activeStyle}
+            // activeStyle={styles.activeStyle}
           >
             Signup
           </Link>{" | "}
           <Link
-            exact
             to="/news"
             className={
               this.props.location.pathname === "/news" ? "active" : "inactive"

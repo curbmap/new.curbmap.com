@@ -26,20 +26,22 @@ const blogs = [
           "I know what you're thinking. I'll pin the best location on a map and send that exact location to my friend, colleague, etc. Why don't people do that already? Maybe we imagine that living in a city (or any place with rules), comes at a cost that everyone must pay, equally."
         }
       </p>,
-      <p>
-        <h4>{"What if we could change all that? "}</h4>
+      <div>
+        <p className="hred">{"What if we could change all that? "}</p>
+        <p>
         {
           "What if you could be a part of the solution that makes it better for everyone who has to pay attention to the rules? On the participation hub for curbmap, you will find things like labeling, which helps us build autonomous systems to verify parking restrictions from photos of signs. In the future, we'll have more than just labeling and classification, but for now, the labeling process is instrumental to building a knowledgeable system."
         }
-      </p>,
+        </p>
+      </div>,
       <p>
         {
           "It's revolutionary to think that, maybe you could scan a map near your appointment and find all the curbs that allow you to park for as long as you expect your meeting to last. Just give the connected apps some specifics about your meeting and you'd be good to go!"
         }
       </p>,
-      <p>
-        <h4 className="hblue">{"Happy parking to your future self!"}</h4>
-      </p>
+      <div>
+        <p className="hblue">{"Happy parking to your future self!"}</p>
+      </div>
     ]
   }
 ];
