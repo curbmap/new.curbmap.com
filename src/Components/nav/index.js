@@ -3,11 +3,12 @@ import { connect } from "react-redux";
 import { Link, withRouter } from "react-router-dom";
 import styled from "styled-components";
 import AnimateHeight from "react-animate-height";
+import { push as Menu } from "react-burger-menu";
 import messages from "./messages.js";
 import background from "./curb.jpg";
 import { changeLabels } from "../../Actions/label.action.creators";
 import logo from "./logo.svg";
-import "./nav.css";
+import "./nav.scss";
 import avatar from "./avatar.svg";
 
 const ImgBackground = styled.img`
@@ -49,6 +50,17 @@ class Nav extends Component {
     this.onMouseOut = this.onMouseOut.bind(this);
     this.showMenu = this.showMenu.bind(this);
     this.releaseLabels = this.releaseLabels.bind(this);
+    this.resizeEvent = this.resizeEvent.bind(this);
+  }
+  resizeEvent(event) {
+    this.getMenu();
+  }
+  componentWillReceiveProps() {
+    this.getMenu();
+  }
+  componentWillMount() {
+    this.resizeEvent();
+    window.addEventListener("resize", this.resizeEvent);
   }
   releaseLabels(evt) {
     this.props.dispatch(changeLabels([]));
@@ -61,7 +73,10 @@ class Nav extends Component {
   }
   onMouseEnter(evt) {
     console.log(this.props);
-    if (this.props.location.pathname !== "/labeling") {
+    if (
+      this.props.location.pathname !== "/labeling" &&
+      window.innerWidth > 600
+    ) {
       this.setState({ height: 300 });
       this.showMenu();
     }
@@ -74,64 +89,180 @@ class Nav extends Component {
     this.setState({ height: 125, message: null, messageVisible: false });
   }
   getMenu() {
-    if (this.props.logged_in) {
-      return (
-        <div
-          style={{
-            position: "relative",
-            zIndex: 1,
-            paddingTop: 10,
-            minWidth: "800px",
-            width: "100vw"
-          }}
-        >
-          <a href="https://curbmap.com">
-            <img
-              src={logo}
-              height={100}
-              style={{
-                display: "inline",
-                verticalAlign: "middle",
-                paddingLeft: 15,
-                paddingRight: 15
-              }}
-              alt="The curbmap logo"
-            />
-          </a>
-          <Link
-            exact
-            to="/"
-            className={this.props.location.pathname === "/" ? "active" : "inactive"}
-            onMouseOver={this.onMouseOver}
-            onMouseOut={this.onMouseOut}
-            onClick={this.releaseLabels}
-          >
-            Participation Hub
-          </Link>{" | "}
-          <Link
-            exact
-            to="/labeling"
-            className={
-              this.props.location.pathname === "/labeling" ? "active" : "inactive"
-            }
-            onMouseOver={this.onMouseOver}
-            onMouseOut={this.onMouseOut}
-          >
-            Label
-          </Link>{" | "}
-          <Link
-            exact
-            to="/news"
-            className={
-              this.props.location.pathname === "/news" ? "active" : "inactive"
-            }
-            onMouseOver={this.onMouseOver}
-            onMouseOut={this.onMouseOut}
-            onClick={this.releaseLabels}
-          >
-            News
-          </Link>
-          <div className="user-bar">
+    if (this.props.logged_in && window.innerWidth > 760) {
+      this.setState({
+        menu: (
+          <div className="navbar">
+            <div className="left-nav">
+              <a href="https://curbmap.com">
+                <img
+                  src={logo}
+                  height={100}
+                  style={{
+                    display: "inline",
+                    verticalAlign: "middle",
+                    paddingLeft: 15,
+                    paddingRight: 15
+                  }}
+                  alt="The curbmap logo"
+                />
+              </a>
+              <Link
+                exact
+                to="/"
+                className={
+                  this.props.location.pathname === "/" ? "active" : "inactive"
+                }
+                onMouseOver={this.onMouseOver}
+                onMouseOut={this.onMouseOut}
+                onClick={this.releaseLabels}
+              >
+                Participation Hub
+              </Link>
+              {" | "}
+              <Link
+                exact
+                to="/labeling"
+                className={
+                  this.props.location.pathname === "/labeling"
+                    ? "active"
+                    : "inactive"
+                }
+                onMouseOver={this.onMouseOver}
+                onMouseOut={this.onMouseOut}
+              >
+                Label
+              </Link>
+            </div>
+            <div className="right-nav">
+              <div className="user-bar">
+                <Link
+                  exact
+                  to="/user"
+                  className={
+                    this.props.location.pathname === "/user"
+                      ? "active"
+                      : "inactive"
+                  }
+                  onClick={this.releaseLabels}
+                >
+                  <div className="user-info">
+                    <span className="username">{this.props.username}</span>
+                    <br />
+                    <span className="email">{this.props.email}</span>
+                    <br />
+                    <span className="score">{this.props.score}</span>
+                  </div>
+                  <div className="user-avatar">
+                    <img
+                      src={this.composeAvatar(this.props.avatar)}
+                      width={45}
+                      height={45}
+                    />
+                  </div>
+                </Link>
+              </div>
+            </div>
+          </div>
+        )
+      });
+    } else if (window.innerWidth > 760) {
+      this.setState({
+        menu: (
+          <div className="navbar">
+            <div className="left-nav">
+              <a href="https://curbmap.com">
+                <img
+                  src={logo}
+                  height={100}
+                  style={{
+                    verticalAlign: "middle",
+                    paddingLeft: 15,
+                    paddingRight: 15
+                  }}
+                  alt="the curbmap logo."
+                />
+              </a>
+              <Link
+                to="/"
+                className={
+                  this.props.location.pathname === "/" ? "active" : "inactive"
+                }
+                onMouseOver={this.onMouseOver}
+                onMouseOut={this.onMouseOut}
+              >
+                Participation Hub
+              </Link>
+              {" | "}
+              <Link
+                to="/login"
+                className={
+                  this.props.location.pathname === "/login"
+                    ? "active"
+                    : "inactive"
+                }
+                onMouseOver={this.onMouseOver}
+                onMouseOut={this.onMouseOut}
+              >
+                Login
+              </Link>
+              {" | "}
+              <Link
+                to="/signup"
+                className={
+                  this.props.location.pathname === "/signup"
+                    ? "active"
+                    : "inactive"
+                }
+                onMouseOver={this.onMouseOver}
+                onMouseOut={this.onMouseOut}
+                // activeStyle={styles.activeStyle}
+              >
+                Signup
+              </Link>
+            </div>
+          </div>
+        )
+      });
+    } else if (this.props.logged_in) {
+      // logged in and small display, hamburger time
+      this.setState({
+        menu: (
+          <Menu right pageWrapId={"page-wrap"}>
+            <a href="https://curbmap.com">
+              <img
+                src={logo}
+                height={50}
+                alt="The curbmap logo"
+              />
+            </a>
+            <Link
+              exact
+              to="/"
+              className={
+                this.props.location.pathname === "/" ? "active" : "inactive"
+              }
+              onMouseOver={this.onMouseOver}
+              onMouseOut={this.onMouseOut}
+              onClick={this.releaseLabels}
+            >
+              Participation Hub
+            </Link>
+            <br />
+            <Link
+              exact
+              to="/labeling"
+              className={
+                this.props.location.pathname === "/labeling"
+                  ? "active"
+                  : "inactive"
+              }
+              onMouseOver={this.onMouseOver}
+              onMouseOut={this.onMouseOut}
+            >
+              Label
+            </Link>
+            <br />
             <Link
               exact
               to="/user"
@@ -140,13 +271,6 @@ class Nav extends Component {
               }
               onClick={this.releaseLabels}
             >
-              <div className="user-info">
-                <span className="username">{this.props.username}</span>
-                <br />
-                <span className="email">{this.props.email}</span>
-                <br />
-                <span className="score">{this.props.score}</span>
-              </div>
               <div className="user-avatar">
                 <img
                   src={this.composeAvatar(this.props.avatar)}
@@ -154,77 +278,71 @@ class Nav extends Component {
                   height={45}
                 />
               </div>
+              <div className="user-info">
+                <span className="username">{this.props.username}</span>
+                <br />
+                <span className="email">{this.props.email}</span>
+                <br />
+                <span className="score">{this.props.score}</span>
+              </div>
             </Link>
-          </div>
-        </div>
-      );
+          </Menu>
+        )
+      });
     } else {
-      return (
-        <div
-          style={{
-            position: "relative",
-            zIndex: 1,
-            paddingTop: 10,
-            minWidth: "800px",
-            width: "100vw"
-          }}
-        >
-          <a href="https://curbmap.com">
-            <img
-              src={logo}
-              height={100}
-              style={{
-                verticalAlign: "middle",
-                paddingLeft: 15,
-                paddingRight: 15
-              }}
-              alt="the curbmap logo."
-            />
-          </a>
-          <Link
-            to="/"
-            className={
-              this.props.location.pathname === "/" ? "active" : "inactive"
-            }
-            onMouseOver={this.onMouseOver}
-            onMouseOut={this.onMouseOut}
-          >
-            Participation Hub
-          </Link>{" | "}
-          <Link
-            to="/login"
-            className={
-              this.props.location.pathname === "/login" ? "active" : "inactive"
-            }
-            onMouseOver={this.onMouseOver}
-            onMouseOut={this.onMouseOut}
-          >
-            Login
-          </Link>{" | "}
-          <Link
-            to="/signup"
-            className={
-              this.props.location.pathname === "/signup" ? "active" : "inactive"
-            }
-            onMouseOver={this.onMouseOver}
-            onMouseOut={this.onMouseOut}
-            // activeStyle={styles.activeStyle}
-          >
-            Signup
-          </Link>{" | "}
-          <Link
-            to="/news"
-            className={
-              this.props.location.pathname === "/news" ? "active" : "inactive"
-            }
-            onMouseOver={this.onMouseOver}
-            onMouseOut={this.onMouseOut}
-          >
-            News
-          </Link>
-        </div>
-      );
-      console.log(window.location);
+      // not logged in
+      this.setState({
+        menu: (
+          <Menu pageWrapId={ "page-wrap" } outerContainerId={ "outer-container" } right>
+            <a href="https://curbmap.com">
+              <img
+                src={logo}
+                height={50}
+                alt="The curbmap logo"
+              />
+            </a>
+            <Link
+              exact
+              to="/"
+              className={
+                this.props.location.pathname === "/" ? "active" : "inactive"
+              }
+              onMouseOver={this.onMouseOver}
+              onMouseOut={this.onMouseOut}
+              onClick={this.releaseLabels}
+            >
+              Participation Hub
+            </Link>
+            <br />
+            <Link
+                to="/login"
+                className={
+                  this.props.location.pathname === "/login"
+                    ? "active"
+                    : "inactive"
+                }
+                onMouseOver={this.onMouseOver}
+                onMouseOut={this.onMouseOut}
+              >
+                Login
+              </Link>
+              <br />
+              <Link
+                to="/signup"
+                className={
+                  this.props.location.pathname === "/signup"
+                    ? "active"
+                    : "inactive"
+                }
+                onMouseOver={this.onMouseOver}
+                onMouseOut={this.onMouseOut}
+                // activeStyle={styles.activeStyle}
+              >
+                Signup
+              </Link>
+          </Menu>
+        )
+      });
     }
   }
   chooseRandomMessage() {
@@ -238,33 +356,9 @@ class Nav extends Component {
   getRandomMessage() {
     const message = this.chooseRandomMessage();
     this.setState({
-      message: (
-        <div
-          style={{
-            zIndex: 10,
-            display: "flex",
-            width: "100vw",
-            height: 200,
-            flexDirection: "column",
-            flexAlign: "center",
-            alignContent: "center",
-            alignItems: "center",
-            textAlign: "center"
-          }}
-        >
-          <div
-            style={{
-              position: "relative",
-              width: "50%",
-              minWidth: 700,
-              height: 150,
-              backgroundColor: "rgba(200,200,200,0.8)",
-              borderRadius: 10
-            }}
-          >
-            {message}
-            <br />
-          </div>
+      message: window.innerWidth > 600 && (
+        <div className="random-message-holder">
+          <div className="random-message">{message}</div>
         </div>
       )
     });
@@ -280,7 +374,7 @@ class Nav extends Component {
         ref="heightholder"
       >
         <ImgBackground src={background} alt="A background picture of a curb" />
-        {this.getMenu()}
+        {this.state.menu}
         <br />
         {this.state.message}
         <br />

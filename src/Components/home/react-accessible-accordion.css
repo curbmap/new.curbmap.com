@@ -1,12 +1,14 @@
 .accordion__body {
     display: block;
     animation: fadein .35s ease-in;
+    z-index: 0;
 }
 
 .accordion__body--hidden {
     display: none;
     opacity: 0;
     animation: fadein .35s ease-in;
+    z-index: 0;
 }
 
 @keyframes fadein {
