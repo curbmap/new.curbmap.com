@@ -13,7 +13,11 @@ class Footer extends Component {
         <div className="footer">
           <div className="footer-organization">
             {"Curbmap was fostered with support from "}
-            <img src={hfla} height={45} style={{ verticalAlign: "middle" }} alt="Hack for LA logo" />
+            <a href="http://hackforla.org"><img src={hfla} height={45} style={{ verticalAlign: "middle" }} alt="Hack for LA logo" /></a>
+          </div>
+          <div className="footer-left">
+          Contact us<br />
+          About us<br />
           </div>
         </div>
         <div className="footer-base">
