@@ -24,10 +24,11 @@ const LoginForm = ({
 }) => (
   <form onSubmit={handleSubmit}>
     <input
-      type="email"
+      type="text"
       name="email"
-      placeholder="email address"
-      autoComplete="email"
+      placeholder="username or email address"
+      autoCapitalize="none"
+      autoCorrect={false}
       onChange={handleChange}
       onBlur={handleBlur}
       value={values.email}
@@ -59,7 +60,7 @@ const FormikLoginForm = withFormik({
     const errors = {};
     if (!values.email) {
       errors.email = "Required";
-    } else if (
+    } else if ( values.email.includes("@") &&
       !/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(values.email)
     ) {
       errors.email = "Invalid email address";

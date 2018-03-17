@@ -14,7 +14,7 @@ export function auth(state = initialState, action) {
     case LOGGED_IN:
       if (action.status.success === 1) {
         return Object.assign({}, state, {
-          session: action.status.session,
+          token: action.status.token,
           username: action.status.username,
           email: action.status.email,
           score: parseInt(action.status.score, 10),

@@ -7,7 +7,7 @@ import {
 } from "react-accessible-accordion";
 import clap from "./clap.svg";
 import frown from "./frown.svg";
-//import "../../../node_modules/react-accessible-accordion/dist/react-accessible-accordion.css";
+import "./react-accessible-accordion.css";
 
 import blogs from "./blogs";
 import "./blog.css";

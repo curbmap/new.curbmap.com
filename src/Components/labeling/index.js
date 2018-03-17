@@ -33,8 +33,7 @@ class Labeling extends Component {
         .set("Accept", "application/json")
         .set("Content-Type", "application/json")
         .set("Access-Control-Allow-Origin", "*")
-        .set("session", session)
-        .set("username", username)
+        .set("Authorization", "Bearer "+ this.props.token)
         .send(state)
         .then(this.sentRects)
         .catch(err => {
@@ -61,8 +60,7 @@ class Labeling extends Component {
       .set("Accept", "application/json")
       .set("Content-Type", "application/json")
       .set("Access-Control-Allow-Origin", "*")
-      .set("session", this.props.session)
-      .set("username", this.props.username)
+      .set("Authorization", "Bearer "+ this.props.token)
       .then(this.gotImage)
       .catch(err => {
         console.log("ERR", err);
@@ -125,7 +123,7 @@ const mapStateToProps = state => {
   let newProps = {};
   newProps.username = state.auth.username;
   newProps.email = state.auth.email;
-  newProps.session = state.auth.session;
+  newProps.token = state.auth.token;
   newProps.logged_in = state.auth.success === 1;
   newProps.signed_up = false;
   newProps.image = state.updateImage.image;
