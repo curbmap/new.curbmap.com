@@ -1,5 +1,7 @@
 body {
   background-color: #4DB4D1;
+  margin: 0px;
+  padding: 0px;
 }
 
 @keyframes App-logo-spin {

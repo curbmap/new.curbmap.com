@@ -1,8 +1,9 @@
 a,
 a:hover,
 a:visited,
-Link,
-.inactive, .inactive:hover {
+link,
+.inactive,
+.inactive:hover {
   padding: 10px 10px 5px 10px;
   margin-left: 5px;
   color: white;
@@ -29,7 +30,7 @@ Link,
   border-radius: 20px;
   color: white;
   border: 1px solid clear;
-  background-color: hsla(218, 50%, 20%, 1);  
+  background-color: hsla(218, 50%, 20%, 1);
 }
 
 .user-bar {
@@ -80,4 +81,12 @@ Link,
   font-family: Roboto-Regular;
   line-height: 40px;
   color: white;
+}
+
+.navbar {
+  position: "relative";
+  z-index: 1;
+  padding-top: 10px;
+  min-width: "800px";
+  width: "100vw";
 }

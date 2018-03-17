@@ -7,11 +7,10 @@
 
 .footer-holder .footer {
   padding: 5px;
-  text-align: right;
   position: relative;
   color: white;
   line-height: 5vh;
-  height: 15vh;
+  min-height: 15vh;
   background-color: hsla(218, 50%, 20%, 1.0);
 }
 
@@ -21,6 +20,16 @@
   color: white;
   position: relative;
   line-height: 5vh;
-  height: 5vh;
+  min-height: 5vh;
   background-color: rgba(0,0,0,1);
+}
+.footer {
+  display: flex;
+  flex-direction: row;
+}
+.footer-organization {
+  width: 30vw;
+}
+.footer-left {
+  width: 70vw;
 }

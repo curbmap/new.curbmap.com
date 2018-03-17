@@ -7,7 +7,6 @@ import Nav from "./Components/nav";
 import Login from "./Components/login";
 import Signup from "./Components/signup";
 import Home from "./Components/home";
-import News from "./Components/news";
 import Footer from "./Components/footer";
 import User from "./Components/user";
 
@@ -38,12 +37,6 @@ class App extends Component {
               exact
               path="/signup"
               render={props => <Signup props={props} />}
-            />
-            {/* News stuff */}
-            <Route
-              exact
-              path="/news"
-              render={props => <News props={props} />}
             />
             {/* labeling task routes */}
             {this.props.labeling}
