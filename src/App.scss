@@ -6,6 +6,31 @@ body {
   margin: 0px;
   padding: 0px;
 }
+@media print, screen and (min-width: 760px) {
+  .app-routes {
+    position: relative;
+    overflow: scroll;
+    top: 20px;
+    left: 0px;
+  }
+}
+@media print, screen and (max-width: 760px) {
+  .app-routes {
+    position: relative;
+    overflow: scroll;
+    top: 80px;
+    left: 0px;
+  }
+}
+@media print, screen and (max-width: 480px) {
+  .app-routes {
+    position: relative;
+    overflow: scroll;
+    left: 0px;
+    top: 80px;
+  }
+}
+
 // Burger stuff
 .bm-burger-button {
   position: fixed;
@@ -13,6 +38,7 @@ body {
   height: 20px;
   right: 36px;
   top: 36px;
+  z-index: 101;
 }
 
 /* Color/shape of burger icon bars */
@@ -36,7 +62,6 @@ body {
   background: #373a47;
   padding: 2.5em 1.5em 0;
   font-size: 1.15em;
-  margin-top: -20px;
 }
 
 /* Morph shape necessary with bubble or elastic */
@@ -53,5 +78,4 @@ body {
 /* Styling of overlay */
 .bm-overlay {
   background: rgba(0, 0, 0, 0.3);
-  margin-top: -20px;
 }

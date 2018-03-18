@@ -1,0 +1,55 @@
+@import "../../base/_variables.scss";
+@media print, screen and (min-width: 760px) {
+  .wordy {
+    opacity: 1;
+    display: inline;
+  }
+}
+@media print, screen and (max-width: 760px) {
+  .wordy {
+    display: inline;
+  }
+}
+@media print, screen and (max-width: 480px) {
+  .wordy {
+    opacity: 0;
+    display: none;
+  }
+}
+
+.footer-holder {
+  font: 400 $primary-font-size $primary-font;
+  font-size: 1rem;
+  position: relative;
+  height: 20vh;
+  top: 20px;
+}
+
+.footer-holder .footer {
+  padding: 5px;
+  position: relative;
+  color: white;
+  line-height: 5vh;
+  min-height: 15vh;
+  background-color: $primary-card-color;
+}
+
+.footer-holder .footer-base {
+  font-size: 0.675rem;
+  padding: 5px;
+  color: white;
+  position: relative;
+  line-height: 5vh;
+  min-height: 5vh;
+  background-color: rgba(0, 0, 0, 1);
+}
+.footer {
+  display: flex;
+  flex-direction: row;
+}
+.footer-organization {
+  width: 30vw;
+}
+.footer-left {
+  width: 70vw;
+}

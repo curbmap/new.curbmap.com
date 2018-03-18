@@ -10,7 +10,7 @@ import frown from "./frown.svg";
 import "./react-accessible-accordion.css";
 
 import blogs from "./blogs";
-import "./blog.css";
+import "./blog.scss";
 
 const getLocalDateFor = function(date) {
   let realDate = new Date(0);

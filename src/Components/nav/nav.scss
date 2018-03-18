@@ -22,7 +22,7 @@ link,
   text-decoration: none;
   color: white;
   border: 1px solid clear;
-  background-color: hsla(218, 50%, 20%, 1);
+  background-color: $primary-card-color;
 }
 
 .user-bar .active {
@@ -32,7 +32,7 @@ link,
   border-radius: 20px;
   color: white;
   border: 1px solid clear;
-  background-color: hsla(218, 50%, 20%, 1);
+  background-color: $primary-card-color;
 }
 .left-nav {
   position: relative;
@@ -119,7 +119,7 @@ link,
   overflow: hidden;
   max-height: 150px;
   width: 70vw;
-  background-color: rgba(200, 200, 200, 0.8);
+  background-color: $secondary-fg-color;
   border-radius: 10px;
   padding: 15px;
   font: 900 $primary-font-size $primary-font;

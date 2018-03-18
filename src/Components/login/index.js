@@ -5,7 +5,7 @@ import { connect } from "react-redux";
 import logo from "./logo.svg";
 import { loggedIn } from "../../Actions/auth.action.creators";
 import { withFormik } from "formik";
-import "./login.css";
+import "./login.scss";
 
 let HOST_AUTH = "https://curbmap.com";
 // if (process.env.REACT_APP_STAGE === "dev") {

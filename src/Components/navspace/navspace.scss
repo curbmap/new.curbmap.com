@@ -1,9 +1,21 @@
 @import "../../base/_variables.scss";
 
 .navspace {
-  position: "relative";
+  position: fixed;
+  width: 24px;
+  height: 80px;
+  top: 0px;
+  left:0px;
   width: 100vw;
-  height: 150px;
+  height: 80px;
   overflow: hidden;
   margin-bottom: 20px;
+  z-index: 100;
+}
+
+.navspace-logo {
+  position: fixed;
+  top: 10px;
+  left: 0px;
+  height: 60px;
 }

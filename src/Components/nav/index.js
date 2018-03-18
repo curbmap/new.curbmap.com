@@ -43,13 +43,16 @@ class Nav extends Component {
       message: null,
       messageVisible: true,
       menu: null,
-      logged_in: false
+      logged_in: false,
+      menuitems: null,
+      clicked: "/"
     };
     this.onMouseEnter = this.onMouseEnter.bind(this);
     this.onMouseLeave = this.onMouseLeave.bind(this);
     this.onMouseOver = this.onMouseOver.bind(this);
     this.onMouseOut = this.onMouseOut.bind(this);
     this.showMenu = this.showMenu.bind(this);
+    this.onClick = this.onClick.bind(this);
   }
   onMouseOver(evt) {
     evt.target.classList.replace("inactive", "hovering");
@@ -58,10 +61,7 @@ class Nav extends Component {
     evt.target.classList.replace("hovering", "inactive");
   }
   onMouseEnter(evt) {
-    console.log(this.props);
-    if (
-      this.props.location.pathname !== "/labeling"
-    ) {
+    if (this.props.location.pathname !== "/labeling") {
       this.setState({ height: 300 });
       this.showMenu();
     }
@@ -71,21 +71,28 @@ class Nav extends Component {
     this.setState({ messageVisible: true });
   }
   componentDidMount() {
-    this.getMenu();
+    let windowlocation = window.location.pathname;
+    this.setState({clicked: windowlocation});
+    this.getMenu(windowlocation);
   }
   componentDidUpdate() {
-    console.log("did update");
     if (this.props.logged_in) {
       if (!this.state.logged_in) {
-        this.setState({logged_in: true});
-        this.getMenu();
+        this.setState({ logged_in: true });
+        this.getMenu("/");
       }
     }
+  }
+  onClick(evt) {
+    const href = evt.currentTarget.href.split("/");
+    const pathname = "/" + href[href.length - 1];
+    this.setState({clicked: pathname});
+    this.getMenu(pathname);
   }
   onMouseLeave(evt) {
     this.setState({ height: 125, message: null, messageVisible: false });
   }
-  getMenu() {
+  getMenu(clicked) {
     if (this.props.logged_in) {
       this.setState({
         menu: (
@@ -107,11 +114,10 @@ class Nav extends Component {
               <Link
                 exact
                 to="/"
-                className={
-                  window.location.pathname === "/" ? "active" : "inactive"
-                }
+                className={clicked === "/" ? "active" : "inactive"}
                 onMouseOver={this.onMouseOver}
                 onMouseOut={this.onMouseOut}
+                onClick={this.onClick}
               >
                 Participation Hub
               </Link>
@@ -119,13 +125,10 @@ class Nav extends Component {
               <Link
                 exact
                 to="/labeling"
-                className={
-                  window.location.pathname === "/labeling"
-                    ? "active"
-                    : "inactive"
-                }
+                className={clicked === "/labeling" ? "active" : "inactive"}
                 onMouseOver={this.onMouseOver}
                 onMouseOut={this.onMouseOut}
+                onClick={this.onClick}
               >
                 Label
               </Link>
@@ -135,11 +138,8 @@ class Nav extends Component {
                 <Link
                   exact
                   to="/user"
-                  className={
-                    window.location.pathname === "/user"
-                      ? "active"
-                      : "inactive"
-                  }
+                  className={clicked === "/user" ? "active" : "inactive"}
+                  onClick={this.onClick}
                 >
                   <div className="user-info">
                     <span className="username">{this.props.username}</span>
@@ -180,33 +180,30 @@ class Nav extends Component {
               </a>
               <Link
                 to="/"
-                className={
-                  window.location.pathname === "/" ? "active" : "inactive"
-                }
+                className={clicked === "/" ? "active" : "inactive"}
                 onMouseOver={this.onMouseOver}
                 onMouseOut={this.onMouseOut}
+                onClick={this.onClick}
               >
                 Participation Hub
               </Link>
               {" | "}
               <Link
                 to="/login"
-                className={
-                  window.location.pathname === "/login" ? "active" : "inactive"
-                }
+                className={clicked === "/login" ? "active" : "inactive"}
                 onMouseOver={this.onMouseOver}
                 onMouseOut={this.onMouseOut}
+                onClick={this.onClick}
               >
                 Login
               </Link>
               {" | "}
               <Link
                 to="/signup"
-                className={
-                  window.location.pathname === "/signup" ? "active" : "inactive"
-                }
+                className={clicked === "/signup" ? "active" : "inactive"}
                 onMouseOver={this.onMouseOver}
                 onMouseOut={this.onMouseOut}
+                onClick={this.onClick}
               >
                 Signup
               </Link>
@@ -227,7 +224,7 @@ class Nav extends Component {
   getRandomMessage() {
     const message = this.chooseRandomMessage();
     this.setState({
-      message:  (
+      message: (
         <div className="random-message-holder">
           <div className="random-message">{message}</div>
         </div>

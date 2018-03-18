@@ -183,7 +183,7 @@ class App extends Component {
           <div>
             {this.state.nav}
             {this.state.menu}
-            <div id="page-wrap">
+            <div className="app-routes" id="page-wrap">
               <Switch>
                 {/* Home related routes */}
                 <Route
@@ -206,8 +206,8 @@ class App extends Component {
                 {this.props.labeling}
                 {this.props.user}
               </Switch>
-              <Footer />
             </div>
+            <Footer />
           </div>
         </BrowserRouter>
       </div>

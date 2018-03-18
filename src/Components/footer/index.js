@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import "./footer.css";
+import "./footer.scss";
 import hfla from "./logo-hfla.svg";
 
 class Footer extends Component {
@@ -9,9 +9,6 @@ class Footer extends Component {
       wordy: true
     };
   }
-
-  
-
   render() {
     return (
       <div className="footer-holder">
@@ -21,7 +18,7 @@ class Footer extends Component {
             About us<br />
           </div>
           <div className="footer-organization">
-            {this.state.wordy && "Curbmap was fostered with support from "}
+            <span className="wordy">{"Curbmap was fostered with support from "}</span>
             <a href="http://hackforla.org">
               <img
                 src={hfla}

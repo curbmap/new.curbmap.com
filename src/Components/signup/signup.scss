@@ -1,23 +1,26 @@
-.login-logo {
+@import "../../base/_variables.scss";
+
+.signup-logo {
   margin-top: 20px;
   width: 20%;
 }
-.login-holder {
+.signup-holder {
   width: 100%;
-  min-height: 60vh;
+  height: 90vh;
+  top: 15px;
+  position: relative;
   display: flex;
   flex-direction: column;
   align-content: center;
   align-items: center;
   overflow-y: auto;
 }
-.login-header {
+.signup-header {
   color: white;
   margin: 8px;
 }
-
 @media print, screen and (min-width: 800px) {
-  .login {
+  .signup {
     position: relative;
     border-radius: 10px;
     background-color: hsla(218, 50%, 20%, 1);
@@ -26,7 +29,7 @@
   }
 }
 @media print, screen and (max-width: 780px) {
-  .login {
+  .signup {
     position: relative;
     border-radius: 10px;
     background-color: hsla(218, 50%, 20%, 1);
@@ -34,8 +37,8 @@
     text-align: center;
   }
 }
-@media print, screen and (max-width: 640px) {
-  .login {
+@media print, screen and (max-width: 480px) {
+  .signup {
     position: relative;
     border-radius: 10px;
     background-color: hsla(218, 50%, 20%, 1);
@@ -43,7 +46,7 @@
     text-align: center;
   }
 }
-.login-input {
+input {
   padding: 0.5rem;
   font-size: 16px;
   width: 90%;
@@ -79,7 +82,7 @@ label {
   margin-top: 0.25rem;
 }
 
-button.login {
+button {
   max-width: 150px;
   margin: 20px 0;
   padding: 12px 20px;
@@ -95,12 +98,12 @@ button.login {
   -webkit-appearance: none;
 }
 
-button.login:disabled {
+button:disabled {
   opacity: 0.5;
   cursor: not-allowed !important;
 }
 
-button.login + button.login {
+button + button {
   margin-left: 0.5rem;
 }
 
