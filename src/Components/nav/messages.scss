@@ -1,0 +1,33 @@
+@import "../../base/_variables.scss";
+
+.message {
+  display: flex;
+  flex-direction: row;
+  align-content: center;
+  align-items: center;
+}
+
+.message-heading {
+  font-family: $primary-font;
+  color: black;
+}
+.message-body {
+  font: 400 $secondary-font-size $primary-font;
+}
+.image-holder {
+  max-width: 10vw;
+  max-height: 150px;
+  display: inline;
+}
+.message-body-holder {
+  display: inline;
+}
+.message-image {
+  width: 9vw;
+  transform: rotate(-10deg) scale(0.8);
+  border-radius: 20px;
+  border: 10px solid hsla(218, 50%, 20%, 1.0);
+  padding-left: 10px;
+  padding-right: 10px;
+  background-color:hsla(218, 50%, 20%, 1.0);
+}

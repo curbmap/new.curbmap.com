@@ -3,7 +3,6 @@ import { connect } from "react-redux";
 import { Link, withRouter } from "react-router-dom";
 import styled from "styled-components";
 import AnimateHeight from "react-animate-height";
-import { push as Menu } from "react-burger-menu";
 import messages from "./messages.js";
 import background from "./curb.jpg";
 import { changeLabels } from "../../Actions/label.action.creators";
@@ -42,7 +41,8 @@ class Nav extends Component {
     this.state = {
       height: 125,
       message: null,
-      messageVisible: true
+      messageVisible: true,
+      menu: null
     };
     this.onMouseEnter = this.onMouseEnter.bind(this);
     this.onMouseLeave = this.onMouseLeave.bind(this);
@@ -51,16 +51,6 @@ class Nav extends Component {
     this.showMenu = this.showMenu.bind(this);
     this.releaseLabels = this.releaseLabels.bind(this);
     this.resizeEvent = this.resizeEvent.bind(this);
-  }
-  resizeEvent(event) {
-    this.getMenu();
-  }
-  componentWillReceiveProps() {
-    this.getMenu();
-  }
-  componentWillMount() {
-    this.resizeEvent();
-    window.addEventListener("resize", this.resizeEvent);
   }
   releaseLabels(evt) {
     this.props.dispatch(changeLabels([]));
@@ -74,8 +64,7 @@ class Nav extends Component {
   onMouseEnter(evt) {
     console.log(this.props);
     if (
-      this.props.location.pathname !== "/labeling" &&
-      window.innerWidth > 600
+      this.props.location.pathname !== "/labeling"
     ) {
       this.setState({ height: 300 });
       this.showMenu();
@@ -89,7 +78,7 @@ class Nav extends Component {
     this.setState({ height: 125, message: null, messageVisible: false });
   }
   getMenu() {
-    if (this.props.logged_in && window.innerWidth > 760) {
+    if (this.props.logged_in) {
       this.setState({
         menu: (
           <div className="navbar">
@@ -166,7 +155,7 @@ class Nav extends Component {
           </div>
         )
       });
-    } else if (window.innerWidth > 760) {
+    } else {
       this.setState({
         menu: (
           <div className="navbar">
@@ -186,7 +175,7 @@ class Nav extends Component {
               <Link
                 to="/"
                 className={
-                  this.props.location.pathname === "/" ? "active" : "inactive"
+                  window.location.pathname === "/" ? "active" : "inactive"
                 }
                 onMouseOver={this.onMouseOver}
                 onMouseOut={this.onMouseOut}
@@ -197,9 +186,7 @@ class Nav extends Component {
               <Link
                 to="/login"
                 className={
-                  this.props.location.pathname === "/login"
-                    ? "active"
-                    : "inactive"
+                  window.location.pathname === "/login" ? "active" : "inactive"
                 }
                 onMouseOver={this.onMouseOver}
                 onMouseOut={this.onMouseOut}
@@ -210,137 +197,15 @@ class Nav extends Component {
               <Link
                 to="/signup"
                 className={
-                  this.props.location.pathname === "/signup"
-                    ? "active"
-                    : "inactive"
+                  window.location.pathname === "/signup" ? "active" : "inactive"
                 }
                 onMouseOver={this.onMouseOver}
                 onMouseOut={this.onMouseOut}
-                // activeStyle={styles.activeStyle}
               >
                 Signup
               </Link>
             </div>
           </div>
-        )
-      });
-    } else if (this.props.logged_in) {
-      // logged in and small display, hamburger time
-      this.setState({
-        menu: (
-          <Menu right pageWrapId={"page-wrap"}>
-            <a href="https://curbmap.com">
-              <img
-                src={logo}
-                height={50}
-                alt="The curbmap logo"
-              />
-            </a>
-            <Link
-              exact
-              to="/"
-              className={
-                this.props.location.pathname === "/" ? "active" : "inactive"
-              }
-              onMouseOver={this.onMouseOver}
-              onMouseOut={this.onMouseOut}
-              onClick={this.releaseLabels}
-            >
-              Participation Hub
-            </Link>
-            <br />
-            <Link
-              exact
-              to="/labeling"
-              className={
-                this.props.location.pathname === "/labeling"
-                  ? "active"
-                  : "inactive"
-              }
-              onMouseOver={this.onMouseOver}
-              onMouseOut={this.onMouseOut}
-            >
-              Label
-            </Link>
-            <br />
-            <Link
-              exact
-              to="/user"
-              className={
-                this.props.location.pathname === "/user" ? "active" : "inactive"
-              }
-              onClick={this.releaseLabels}
-            >
-              <div className="user-avatar">
-                <img
-                  src={this.composeAvatar(this.props.avatar)}
-                  width={45}
-                  height={45}
-                />
-              </div>
-              <div className="user-info">
-                <span className="username">{this.props.username}</span>
-                <br />
-                <span className="email">{this.props.email}</span>
-                <br />
-                <span className="score">{this.props.score}</span>
-              </div>
-            </Link>
-          </Menu>
-        )
-      });
-    } else {
-      // not logged in
-      this.setState({
-        menu: (
-          <Menu pageWrapId={ "page-wrap" } outerContainerId={ "outer-container" } right>
-            <a href="https://curbmap.com">
-              <img
-                src={logo}
-                height={50}
-                alt="The curbmap logo"
-              />
-            </a>
-            <Link
-              exact
-              to="/"
-              className={
-                this.props.location.pathname === "/" ? "active" : "inactive"
-              }
-              onMouseOver={this.onMouseOver}
-              onMouseOut={this.onMouseOut}
-              onClick={this.releaseLabels}
-            >
-              Participation Hub
-            </Link>
-            <br />
-            <Link
-                to="/login"
-                className={
-                  this.props.location.pathname === "/login"
-                    ? "active"
-                    : "inactive"
-                }
-                onMouseOver={this.onMouseOver}
-                onMouseOut={this.onMouseOut}
-              >
-                Login
-              </Link>
-              <br />
-              <Link
-                to="/signup"
-                className={
-                  this.props.location.pathname === "/signup"
-                    ? "active"
-                    : "inactive"
-                }
-                onMouseOver={this.onMouseOver}
-                onMouseOut={this.onMouseOut}
-                // activeStyle={styles.activeStyle}
-              >
-                Signup
-              </Link>
-          </Menu>
         )
       });
     }
@@ -356,7 +221,7 @@ class Nav extends Component {
   getRandomMessage() {
     const message = this.chooseRandomMessage();
     this.setState({
-      message: window.innerWidth > 600 && (
+      message:  (
         <div className="random-message-holder">
           <div className="random-message">{message}</div>
         </div>
@@ -387,7 +252,6 @@ class Nav extends Component {
   }
 }
 const mapStateToProps = state => {
-  console.log("NAV PROPS: ", state);
   return {
     logged_in: state.auth.logged_in,
     signed_up: state.auth.signed_up,

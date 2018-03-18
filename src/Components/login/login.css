@@ -6,7 +6,7 @@
   width: 100%;
   min-height: 60vh;
   display: flex;
-  flex-direction: column;  
+  flex-direction: column;
   align-content: center;
   align-items: center;
   overflow-y: auto;
@@ -15,12 +15,33 @@
   color: white;
   margin: 8px;
 }
-.login {
-  position: relative;
-  border-radius: 10px;
-  background-color: hsla(218, 50%, 20%, 1.0);
-  width: 40vw;
-  text-align: center;
+
+@media print, screen and (min-width: 800px) {
+  .login {
+    position: relative;
+    border-radius: 10px;
+    background-color: hsla(218, 50%, 20%, 1);
+    width: 40vw;
+    text-align: center;
+  }
+}
+@media print, screen and (max-width: 780px) {
+  .login {
+    position: relative;
+    border-radius: 10px;
+    background-color: hsla(218, 50%, 20%, 1);
+    width: 60vw;
+    text-align: center;
+  }
+}
+@media print, screen and (max-width: 640px) {
+  .login {
+    position: relative;
+    border-radius: 10px;
+    background-color: hsla(218, 50%, 20%, 1);
+    width: 90vw;
+    text-align: center;
+  }
 }
 .login-input {
   padding: 0.5rem;

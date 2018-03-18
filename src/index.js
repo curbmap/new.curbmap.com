@@ -8,7 +8,6 @@ import { createStore, combineReducers } from "redux";
 import { auth } from "./Reducers/auth.reducers";
 import { updateLabels } from "./Reducers/label.reducers";
 import { updateImage } from "./Reducers/image.reducers";
-
 let store = createStore(combineReducers({ auth, updateLabels, updateImage }));
 const unsubscribe = store.subscribe(() => console.log(store.getState()));
 

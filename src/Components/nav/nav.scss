@@ -1,0 +1,174 @@
+@import "../../base/_variables.scss";
+
+a,
+a:hover,
+a:visited,
+link,
+.inactive,
+.inactive:hover {
+  padding: 10px 10px 5px 10px;
+  margin-left: 5px;
+  color: white;
+  border: 1px solid clear;
+  border-top-left-radius: 5px;
+  border-top-right-radius: 5px;
+  position: relative;
+  text-decoration: none;
+}
+
+.active {
+  padding: 10px 10px 5px 10px;
+  margin-left: 5px;
+  text-decoration: none;
+  color: white;
+  border: 1px solid clear;
+  background-color: hsla(218, 50%, 20%, 1);
+}
+
+.user-bar .active {
+  padding: 10px 10px 5px 10px;
+  margin-left: 5px;
+  text-decoration: none;
+  border-radius: 20px;
+  color: white;
+  border: 1px solid clear;
+  background-color: hsla(218, 50%, 20%, 1);
+}
+.left-nav {
+  position: relative;
+  width: 70vw;
+  min-width: 400px;
+}
+.right-nav {
+  position: relative;
+  width: 30vw;
+}
+.user-bar {
+  position: relative;
+  width: 300px;
+  height: 100px;
+  float: right;
+  overflow: hidden;
+  background: #4db4d1;
+  border-radius: 15px;
+}
+
+.user-info {
+  width: 220px;
+  height: 100px;
+  text-align: left;
+  float: right;
+  padding: 0px;
+}
+
+.user-avatar {
+  width: 40px;
+  height: 40px;
+  line-height: 40px;
+  vertical-align: top;
+  margin-top: -10px;
+  margin-right: 10px;
+  float: right;
+  padding: 6px;
+  padding-right: 10px;
+  overflow: hidden;
+  background: rgba(100, 100, 100, 0.75);
+  border-radius: 50%;
+  text-align: center;
+}
+
+.username {
+  font: 900 $primary-font-size $secondary-font;
+  color: black;
+}
+
+.email {
+  color: rgba(120, 60, 60, 0.7);
+  vertical-align: top;
+}
+
+.score {
+  font: 400 $secondary-font-size $secondary-font;
+  line-height: 40px;
+  color: white;
+}
+
+.navbar {
+  position: "relative";
+  display: inline-flex;
+  flex-direction: row;
+  padding-top: 10px;
+  min-width: 800px;
+  width: 100vw;
+  margin-bottom: 20px;
+  z-index: 100;
+}
+
+.random-message-holder {
+  width: 100vw;
+  height: 150px;
+  max-height: 150px;
+  text-align: "center";
+  display: flex;
+  flex-direction: column;
+  align-content: center;
+  align-items: center;
+}
+.random-message {
+  position: relative;
+  overflow: hidden;
+  max-height: 150px;
+  width: 70vw;
+  background-color: rgba(200, 200, 200, 0.8);
+  border-radius: 10px;
+  padding: 15px;
+  font: 900 $primary-font-size $primary-font;
+}
+
+// Burger stuff
+.bm-burger-button {
+  position: fixed;
+  width: 24px;
+  height: 20px;
+  right: 36px;
+  top: 36px;
+}
+
+/* Color/shape of burger icon bars */
+.bm-burger-bars {
+  background: #373a47;
+}
+
+/* Position and sizing of clickable cross button */
+.bm-cross-button {
+  height: 24px;
+  width: 24px;
+}
+
+/* Color/shape of close button cross */
+.bm-cross {
+  background: #bdc3c7;
+}
+
+/* General sidebar styles */
+.bm-menu {
+  background: #373a47;
+  padding: 2.5em 1.5em 0;
+  font-size: 1.15em;
+}
+
+/* Morph shape necessary with bubble or elastic */
+.bm-morph-shape {
+  fill: #373a47;
+}
+
+/* Wrapper for item list */
+.bm-item-list {
+  color: #b8b7ad;
+  padding: 0.8em;
+}
+
+/* Styling of overlay */
+.bm-overlay {
+  background: rgba(0, 0, 0, 0.3);
+}
