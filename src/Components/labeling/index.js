@@ -3,6 +3,7 @@ import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import superagent from "superagent";
 import { updateImage } from "../../Actions/image.action.creators";
+import {changeLabels} from "../../Actions/label.action.creators";
 import LabelingContent from "./LabelingContent.js";
 import loading from "./loading.svg";
 import "./loading.css";
@@ -53,6 +54,9 @@ class Labeling extends Component {
   componentDidMount() {
     console.log("GETTING IMAGE");
     this.getImage();
+  }
+  componentWillUnmount() {
+    this.props.dispatch(changeLabels([]));
   }
   getImage() {
     superagent

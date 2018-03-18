@@ -42,18 +42,14 @@ class Nav extends Component {
       height: 125,
       message: null,
       messageVisible: true,
-      menu: null
+      menu: null,
+      logged_in: false
     };
     this.onMouseEnter = this.onMouseEnter.bind(this);
     this.onMouseLeave = this.onMouseLeave.bind(this);
     this.onMouseOver = this.onMouseOver.bind(this);
     this.onMouseOut = this.onMouseOut.bind(this);
     this.showMenu = this.showMenu.bind(this);
-    this.releaseLabels = this.releaseLabels.bind(this);
-    this.resizeEvent = this.resizeEvent.bind(this);
-  }
-  releaseLabels(evt) {
-    this.props.dispatch(changeLabels([]));
   }
   onMouseOver(evt) {
     evt.target.classList.replace("inactive", "hovering");
@@ -73,6 +69,18 @@ class Nav extends Component {
   showMenu() {
     this.getRandomMessage();
     this.setState({ messageVisible: true });
+  }
+  componentDidMount() {
+    this.getMenu();
+  }
+  componentDidUpdate() {
+    console.log("did update");
+    if (this.props.logged_in) {
+      if (!this.state.logged_in) {
+        this.setState({logged_in: true});
+        this.getMenu();
+      }
+    }
   }
   onMouseLeave(evt) {
     this.setState({ height: 125, message: null, messageVisible: false });
@@ -100,11 +108,10 @@ class Nav extends Component {
                 exact
                 to="/"
                 className={
-                  this.props.location.pathname === "/" ? "active" : "inactive"
+                  window.location.pathname === "/" ? "active" : "inactive"
                 }
                 onMouseOver={this.onMouseOver}
                 onMouseOut={this.onMouseOut}
-                onClick={this.releaseLabels}
               >
                 Participation Hub
               </Link>
@@ -113,7 +120,7 @@ class Nav extends Component {
                 exact
                 to="/labeling"
                 className={
-                  this.props.location.pathname === "/labeling"
+                  window.location.pathname === "/labeling"
                     ? "active"
                     : "inactive"
                 }
@@ -129,11 +136,10 @@ class Nav extends Component {
                   exact
                   to="/user"
                   className={
-                    this.props.location.pathname === "/user"
+                    window.location.pathname === "/user"
                       ? "active"
                       : "inactive"
                   }
-                  onClick={this.releaseLabels}
                 >
                   <div className="user-info">
                     <span className="username">{this.props.username}</span>

@@ -12,45 +12,86 @@ import Footer from "./Components/footer";
 import User from "./Components/user";
 import { push as Menu } from "react-burger-menu";
 import logo from "./Components/nav/logo.svg";
+import avatar from "./Components/nav/avatar.svg";
 import { Link, withRouter } from "react-router-dom";
 
 class App extends Component {
   constructor(props) {
-    super(...props);
-    this.state = {};
-    this.releaseLabels = this.releaseLabels.bind(this);
+    super(props);
+    this.state = { menuopen: false, currentClick: "/", logged_in: false };
     this.resizeEvent = this.resizeEvent.bind(this);
+    this.hideMenu = this.hideMenu.bind(this);
+    this.recreateMenu = this.recreateMenu.bind(this);
+    this.composeAvatar = this.composeAvatar.bind(this);
   }
   componentDidMount() {
+    console.log("componentDidMount");
     window.addEventListener("resize", this.resizeEvent);
-    this.resizeEvent();
+    this.recreateMenu("/");
+  }
+  componentDidUpdate() {
+    if (this.props.logged_in) {
+      if (!this.state.logged_in) {
+        this.setState({ logged_in: true });
+        this.recreateMenu("/");
+      }
+    } else {
+      if (this.state.logged_in) {
+        this.setState({ logged_in: false });
+        this.recreateMenu("/");
+      }
+    }
   }
   componentWillUnmount() {
     window.removeEventListener("resize", this.resizeEvent);
   }
+  componentWillReceiveProps() {
+    this.setState({ currentClick: "/" });
+  }
   resizeEvent(evt) {
+    this.recreateMenu(this.state.currentClick);
+  }
+  recreateMenu(click) {
+    console.log("XX", click);
     if (window.innerWidth > 760) {
-      this.setState({ nav: <Nav /> });
+      this.setState({ nav: <Nav />, menu: null });
     } else {
-      this.setState({ nav: <NavSpace/> && this.getHamburgerMenu() });
+      this.setState({
+        nav: <NavSpace />,
+        menu: this.getHamburgerMenu(click),
+        menuopen: false
+      });
     }
   }
-  releaseLabels(evt) {
-    this.props.dispatch(changeLabels([]));
+  hideMenu(evt) {
+    let href = evt.currentTarget.href.split("/");
+    let click = "/" + href[href.length - 1];
+    this.setState({
+      nav: <NavSpace />,
+      menu: this.getHamburgerMenu(click),
+      menuopen: false,
+      currentClick: click
+    });
+    this.forceUpdate();
   }
-  getHamburgerMenu() {
+  getHamburgerMenu(currentClick) {
     if (this.props.logged_in) {
       // logged in and small display, hamburger time
       return (
-        <Menu right pageWrapId={"page-wrap"}>
+        <Menu
+          isOpen={this.state.menuopen}
+          pageWrapId={"page-wrap"}
+          outerContainerId={"outer-container"}
+          right
+        >
           <a href="https://curbmap.com">
             <img src={logo} height={50} alt="The curbmap logo" />
           </a>
           <Link
             exact
             to="/"
-            className={window.location.pathname === "/" ? "active" : "inactive"}
-            onClick={this.releaseLabels}
+            className={currentClick === "/" ? "active" : "inactive"}
+            onClick={this.hideMenu}
           >
             Participation Hub
           </Link>
@@ -58,9 +99,8 @@ class App extends Component {
           <Link
             exact
             to="/labeling"
-            className={
-              window.location.pathname === "/labeling" ? "active" : "inactive"
-            }
+            className={currentClick === "/labeling" ? "active" : "inactive"}
+            onClick={this.hideMenu}
           >
             Label
           </Link>
@@ -68,10 +108,8 @@ class App extends Component {
           <Link
             exact
             to="/user"
-            className={
-              window.location.pathname === "/user" ? "active" : "inactive"
-            }
-            onClick={this.releaseLabels}
+            className={currentClick === "/user" ? "active" : "inactive"}
+            onClick={this.hideMenu}
           >
             <div className="user-avatar">
               <img
@@ -94,6 +132,7 @@ class App extends Component {
       // not logged in
       return (
         <Menu
+          isOpen={this.state.menuopen}
           pageWrapId={"page-wrap"}
           outerContainerId={"outer-container"}
           right
@@ -104,32 +143,34 @@ class App extends Component {
           <Link
             exact
             to="/"
-            className={window.location.pathname === "/" ? "active" : "inactive"}
-            onClick={this.releaseLabels}
+            className={currentClick === "/" ? "active" : "inactive"}
+            onClick={this.hideMenu}
           >
             Participation Hub
           </Link>
           <br />
           <Link
             to="/login"
-            className={
-              window.location.pathname === "/login" ? "active" : "inactive"
-            }
+            className={currentClick === "/login" ? "active" : "inactive"}
+            onClick={this.hideMenu}
           >
             Login
           </Link>
           <br />
           <Link
             to="/signup"
-            className={
-              window.location.pathname === "/signup" ? "active" : "inactive"
-            }
+            className={currentClick === "/signup" ? "active" : "inactive"}
+            onClick={this.hideMenu}
           >
             Signup
           </Link>
         </Menu>
       );
     }
+  }
+  composeAvatar(components) {
+    // in future will actually get an array of values to construct the avatar in layers
+    return avatar;
   }
 
   render() {
@@ -140,7 +181,8 @@ class App extends Component {
       <div id="outer-container">
         <BrowserRouter>
           <div>
-          {this.state.nav}
+            {this.state.nav}
+            {this.state.menu}
             <div id="page-wrap">
               <Switch>
                 {/* Home related routes */}
@@ -173,6 +215,7 @@ class App extends Component {
   }
 }
 const mapStateToProps = state => {
+  console.log(state);
   let labeling = null;
   let user = null;
   if (state.auth.logged_in) {
