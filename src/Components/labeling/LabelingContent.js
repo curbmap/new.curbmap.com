@@ -188,7 +188,6 @@ class LabelingContent extends Component {
       totalHeight: target.scrollHeight,
       topOffset: target.scrollTop
     };
-    console.log(scroll);
     let below = false;
     let above = false;
     if (scroll.totalHeight - scroll.topOffset > scroll.height) {
@@ -670,7 +669,6 @@ class LabelingContent extends Component {
     this.updateCanvas();
     this.generateLabelButtons();
     if (this.labelsScroll) {
-      console.log(this.labelsScroll);
       this.handleScroll({ nativeEvent: { target: this.labelsScroll } });
     }
   }

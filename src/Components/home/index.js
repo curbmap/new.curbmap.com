@@ -8,8 +8,9 @@ import {
 import clap from "./clap.svg";
 import frown from "./frown.svg";
 import "./react-accessible-accordion.css";
-
+import ReactGA from "react-ga";
 import blogs from "./blogs";
+import downtriangle from "./downtriangle.svg";
 import "./blog.scss";
 
 const getLocalDateFor = function(date) {
@@ -26,31 +27,33 @@ const getLocalDateFor = function(date) {
 const makePosts = function(blogs) {
   let bloglist = [];
   for (let blogpost of blogs) {
-
-    console.log("blogpost", blogpost);
     let blog_item = (
       <AccordionItem>
-        <AccordionItemTitle className="accordion__title accordion__title--animated">
-          <h3 className=" u-position-relative u-margin-bottom-s">
+        <AccordionItemTitle className="accordion__title">
+          <div className="accordion__img">
             <img
               src={blogpost.image}
               alt={blogpost.altimage}
               className="blog-image"
-            />{" "}
-            {blogpost.title}
-            <div className="accordion__date" role="presentation">
-              {getLocalDateFor(blogpost.date)}
-            </div>
-            <div className="accordion__arrow" role="presentation" />
-          </h3>
+            />
+          </div>
+          <div className="accordion__text-title">{blogpost.title}</div>
+          <div className="accordion__date" role="presentation">
+            {getLocalDateFor(blogpost.date)}
+          </div>
+          <div className="accordion__triangle" role="presentation"><img className="image__triangle" src={downtriangle} /></div>
         </AccordionItemTitle>
         <div className="block font-medium">
           {blogpost.introparagraph + "..."}
         </div>
         <AccordionItemBody>{blogpost.content}</AccordionItemBody>
         <div className="block font-medium">
-          <div className="u-left"><img src={clap} width={30} /></div>&nbsp;
-          <div className="u-right"><img src={frown} width={30} /></div>
+          <div className="u-left">
+            <img src={clap} width={30} />
+          </div>&nbsp;
+          <div className="u-right">
+            <img src={frown} width={30} />
+          </div>
         </div>
       </AccordionItem>
     );
@@ -66,10 +69,14 @@ class Home extends Component {
       blogposts: makePosts(blogs)
     };
   }
+  componentDidMount() {
+    ReactGA.initialize("UA-100333954-1");
+    ReactGA.pageview(window.location.pathname + window.location.search);
+  }
   render() {
     return (
       <div className="blog-space">
-        <h4>{"Welcome to the participation hub"}</h4>
+        {/* <div className="welcome">{"Welcome to the participation hub"}</div> */}
         <Accordion>{this.state.blogposts}</Accordion>
       </div>
     );

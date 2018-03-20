@@ -3,10 +3,12 @@ import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import superagent from "superagent";
 import { updateImage } from "../../Actions/image.action.creators";
-import {changeLabels} from "../../Actions/label.action.creators";
+import { changeLabels } from "../../Actions/label.action.creators";
 import LabelingContent from "./LabelingContent.js";
 import loading from "./loading.svg";
 import "./loading.css";
+import ReactGA from "react-ga";
+
 
 let HOST_RES = "https://curbmap.com:50003";
 // if (process.env.REACT_APP_STAGE === "dev") {
@@ -27,14 +29,14 @@ class Labeling extends Component {
     };
   }
 
-  save(state,session, username) {
+  save(state, session, username) {
     if (this.props.image) {
       superagent
         .post(HOST_RES + "/postRects/")
         .set("Accept", "application/json")
         .set("Content-Type", "application/json")
         .set("Access-Control-Allow-Origin", "*")
-        .set("Authorization", "Bearer "+ this.props.token)
+        .set("Authorization", "Bearer " + this.props.token)
         .send(state)
         .then(this.sentRects)
         .catch(err => {
@@ -45,14 +47,15 @@ class Labeling extends Component {
   }
   sentRects(res) {
     console.log(res);
-    this.props.dispatch(updateImage({file: null, id: null, image: null}));
+    this.props.dispatch(updateImage({ file: null, id: null, image: null }));
     this.counter = 0;
     this.getImage();
   }
   previous() {}
   next() {}
   componentDidMount() {
-    console.log("GETTING IMAGE");
+    ReactGA.initialize("UA-100333954-1");
+    ReactGA.pageview(window.location.pathname + window.location.search);
     this.getImage();
   }
   componentWillUnmount() {
@@ -64,7 +67,7 @@ class Labeling extends Component {
       .set("Accept", "application/json")
       .set("Content-Type", "application/json")
       .set("Access-Control-Allow-Origin", "*")
-      .set("Authorization", "Bearer "+ this.props.token)
+      .set("Authorization", "Bearer " + this.props.token)
       .then(this.gotImage)
       .catch(err => {
         console.log("ERR", err);

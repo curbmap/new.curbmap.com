@@ -6,6 +6,7 @@ import logo from "./logo.svg";
 import { loggedIn } from "../../Actions/auth.action.creators";
 import { withFormik } from "formik";
 import "./signup.scss";
+import ReactGA from 'react-ga';
 
 let HOST_AUTH = "https://curbmap.com";
 // if (process.env.REACT_APP_STAGE === "dev") {
@@ -165,6 +166,10 @@ class Signup extends Component {
       username: "",
       password: ""
     };
+  }
+  componentDidMount() {
+    ReactGA.initialize('UA-100333954-1');
+    ReactGA.pageview(window.location.pathname + window.location.search);
   }
 
   async formHandler(evt) {

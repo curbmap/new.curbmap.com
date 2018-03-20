@@ -25,7 +25,6 @@ class App extends Component {
     this.composeAvatar = this.composeAvatar.bind(this);
   }
   componentDidMount() {
-    console.log("componentDidMount");
     window.addEventListener("resize", this.resizeEvent);
     this.recreateMenu("/");
   }
@@ -52,7 +51,6 @@ class App extends Component {
     this.recreateMenu(this.state.currentClick);
   }
   recreateMenu(click) {
-    console.log("XX", click);
     if (window.innerWidth > 760) {
       this.setState({ nav: <Nav />, menu: null });
     } else {
@@ -215,7 +213,6 @@ class App extends Component {
   }
 }
 const mapStateToProps = state => {
-  console.log(state);
   let labeling = null;
   let user = null;
   if (state.auth.logged_in) {

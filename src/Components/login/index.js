@@ -6,6 +6,9 @@ import logo from "./logo.svg";
 import { loggedIn } from "../../Actions/auth.action.creators";
 import { withFormik } from "formik";
 import "./login.scss";
+import ReactGA from "react-ga";
+ReactGA.initialize("UA-100333954-1");
+ReactGA.pageview(window.location.pathname + window.location.search);
 
 let HOST_AUTH = "https://curbmap.com";
 // if (process.env.REACT_APP_STAGE === "dev") {
@@ -28,7 +31,7 @@ const LoginForm = ({
       name="email"
       placeholder="username or email address"
       autoCapitalize="none"
-      autoCorrect={false}
+      autoCorrect={values.email.toString() ? values.email : undefined}
       onChange={handleChange}
       onBlur={handleBlur}
       value={values.email}
@@ -40,6 +43,7 @@ const LoginForm = ({
       name="password"
       placeholder="password"
       autoComplete="off"
+      autoCorrect={values.password.toString() ? values.password : undefined}
       onChange={handleChange}
       onBlur={handleBlur}
       value={values.password}
@@ -60,7 +64,8 @@ const FormikLoginForm = withFormik({
     const errors = {};
     if (!values.email) {
       errors.email = "Required";
-    } else if ( values.email.includes("@") &&
+    } else if (
+      values.email.includes("@") &&
       !/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(values.email)
     ) {
       errors.email = "Invalid email address";
@@ -86,7 +91,10 @@ class Login extends Component {
       password: ""
     };
   }
-
+  componentDidMount() {
+    ReactGA.initialize("UA-100333954-1");
+    ReactGA.pageview(window.location.pathname + window.location.search);
+  }
   formHandler(evt) {
     superagent
       .post(HOST_AUTH + "/login")

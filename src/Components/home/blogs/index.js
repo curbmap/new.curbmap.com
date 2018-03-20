@@ -1,8 +1,27 @@
 import React from "react"; // for JSX and importing files
 import questions from "./questions.svg";
 import logo from "./logo.svg";
-
+import form from "./form.svg";
 const blogs = [
+  {
+    date: 1521435363,
+    image: form,
+    altimage: "form to be filled out",
+    title: "We want your feedback.",
+    introparagraph:
+      "We need to know if the community wants to revolutionize parking and access to the restriction information.",
+    content: [
+      <p>
+        {
+          "Participate in our new survey to get great feedback from the people who really matter. You!"
+        }
+      </p>,
+      <p>
+        {window.innerWidth > 800 && <iframe src="https://docs.google.com/forms/d/e/1FAIpQLSfgMu5CEwPSyCnI9kr2nSX6ZzFaKxp4uuRIX5IDaVd3CKUqbA/viewform?embedded=true" width="600" height="500" frameBorder="0" marginHeight="0" marginWidth="0">Loading...</iframe>}
+        {window.innerWidth <= 800 && <a href="https://goo.gl/forms/5lDAflUDF90t0ED23"><div  className="bluelink">Get the survery here</div></a>}
+      </p>
+    ]
+  },
   {
     date: 1519716712,
     image: logo,
@@ -29,9 +48,9 @@ const blogs = [
       <div>
         <p className="hred">{"What if we could change all that? "}</p>
         <p>
-        {
-          "What if you could be a part of the solution that makes it better for everyone who has to pay attention to the rules? On the participation hub for curbmap, you will find things like labeling, which helps us build autonomous systems to verify parking restrictions from photos of signs. In the future, we'll have more than just labeling and classification, but for now, the labeling process is instrumental to building a knowledgeable system."
-        }
+          {
+            "What if you could be a part of the solution that makes it better for everyone who has to pay attention to the rules? On the participation hub for curbmap, you will find things like labeling, which helps us build autonomous systems to verify parking restrictions from photos of signs. In the future, we'll have more than just labeling and classification, but for now, the labeling process is instrumental to building a knowledgeable system."
+          }
         </p>
       </div>,
       <p>

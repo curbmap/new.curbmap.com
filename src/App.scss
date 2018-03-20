@@ -30,7 +30,12 @@ body {
     top: 80px;
   }
 }
-
+.welcome {
+  font: 400 2.0em $primary-font;
+  color: white;
+  margin-bottom: 20px;
+  margin-top: -50px;
+}
 // Burger stuff
 .bm-burger-button {
   position: fixed;
