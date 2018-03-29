@@ -7,7 +7,7 @@ var imgCache = {
 };
 
 var brokenImage = imgCache.brokenImage;
-brokenImage.src = "/assets/broken-image.png";
+brokenImage.src = "./broken.svg";
 brokenImage.onload = function() {
   this.brokenImage = true;
 };
